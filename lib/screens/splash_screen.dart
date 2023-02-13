@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pigalukuvendors/screens/auth_screen.dart';
+import 'package:pigalukuvendors/screens/register_screen.dart';
 
 import 'home_screen.dart';
 
@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ), () {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if(user==null){
-          Navigator.popAndPushNamed(context, AuthScreen.id);
+          Navigator.popAndPushNamed(context, RegisterScreen.id);
         }else{
           Navigator.popAndPushNamed(context, HomeScreen.id);
         }
@@ -45,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
               Image.asset('images/pigaluku_logo.png'),
               const SizedBox(height: 20,),
               const Text(
-                'Clothing Store',
+                'Piga Luku Vendor Application',
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               )
             ],

@@ -1,13 +1,20 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:pigalukuvendors/screens/auth_screen.dart';
+import 'package:pigalukuvendors/providers/auth_provider.dart';
 import 'package:pigalukuvendors/screens/home_screen.dart';
+import 'package:pigalukuvendors/screens/register_screen.dart';
 import 'package:pigalukuvendors/screens/splash_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => AuthProvider())
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -23,7 +30,7 @@ class MyApp extends StatelessWidget {
       initialRoute: SplashScreen.id,
       routes: {
         SplashScreen.id:(context)=> const SplashScreen(),
-        AuthScreen.id:(context) => const AuthScreen(),
+        RegisterScreen.id:(context) => const RegisterScreen(),
         HomeScreen.id:(context) => const HomeScreen()
       },
     );
