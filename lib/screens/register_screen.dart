@@ -11,7 +11,8 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(
+        resizeToAvoidBottomInset: true,
+        body: SingleChildScrollView(
           child: Column(
             children: const [
               ShopPicCard(),
