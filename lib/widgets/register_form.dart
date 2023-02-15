@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:pigalukuvendors/providers/auth_provider.dart';
+import 'package:pigalukuvendors/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
 class RegisterForm extends StatefulWidget {
@@ -16,7 +20,38 @@ class _RegisterFormState extends State<RegisterForm> {
   final _passwordTextController = TextEditingController();
   final _confirmpasswordTextController = TextEditingController();
   final _addressTextController = TextEditingController();
+  final _shopNameTextController = TextEditingController();
+  final _descriptionTextController = TextEditingController();
+  String? email;
+  String? password;
+  String? shopName;
+  String? ownerName;
+  String? ownerMobile;
+  String? storeMobile;
+  bool _isLoading = false;
 
+
+
+  Future<String?>uploadFile(filePath) async {
+    File file = File(filePath);
+
+
+    FirebaseStorage _storage = FirebaseStorage.instance;
+
+    try {
+      await _storage
+          .ref("uploads/shopProfilePic/${_shopNameTextController.text}").putFile(file);
+      ;
+    } on FirebaseException catch(e) {
+      print(e.code);
+    }
+
+    String downloadUrl = await _storage
+        .ref("uploads/shopProfilePic/${_shopNameTextController.text}")
+        .getDownloadURL();
+
+    return downloadUrl;
+  }
 
 
 
@@ -24,7 +59,18 @@ class _RegisterFormState extends State<RegisterForm> {
   Widget build(BuildContext context) {
     final _authData = Provider.of<AuthProvider>(context);
 
-    return Form(
+
+    scaffoldMessage(message){
+      return ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(message)
+          )
+      );
+    }
+
+    return _isLoading ? CircularProgressIndicator(
+      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+    ) : Form(
       key: _formKey,
       child: Column(
         children: [
@@ -35,6 +81,12 @@ class _RegisterFormState extends State<RegisterForm> {
                 if(value!.isEmpty){
                   return "Enter Shop Name";
                 }
+                setState(() {
+                  _shopNameTextController.text = value;
+                });
+                setState(() {
+                  shopName = value;
+                });
                 return null;
               },
               decoration: InputDecoration(
@@ -66,6 +118,9 @@ class _RegisterFormState extends State<RegisterForm> {
                 if(value!.isEmpty){
                   return "Enter Owner Name";
                 }
+                setState(() {
+                  ownerName = value;
+                });
                 return null;
               },
               decoration: InputDecoration(
@@ -98,11 +153,15 @@ class _RegisterFormState extends State<RegisterForm> {
                 if(value!.isEmpty){
                   return "Enter Owner Phone Number";
                 }
+                setState(() {
+                  ownerMobile = value;
+                });
                 return null;
               },
-              maxLength: 12,
+              maxLength: 9,
               decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.phone),
+                  prefixText: "+254",
                   labelText: "Owner Phone Number",
                   contentPadding: EdgeInsets.zero,
                   focusColor: Theme.of(context).primaryColor,
@@ -131,11 +190,15 @@ class _RegisterFormState extends State<RegisterForm> {
                 if(value!.isEmpty){
                   return "Enter Store Phone Number";
                 }
+                setState(() {
+                  storeMobile = value;
+                });
                 return null;
               },
-              maxLength: 12,
+              maxLength: 9,
               decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.phone_android_sharp),
+                  prefixText: "+254",
                   labelText: "Store Phone Number",
                   contentPadding: EdgeInsets.zero,
                   focusColor: Theme.of(context).primaryColor,
@@ -169,6 +232,9 @@ class _RegisterFormState extends State<RegisterForm> {
                 if(!isValid){
                   return "This Email is invalid";
                 }
+                setState(() {
+                  email = value;
+                });
                 return null;
               },
               decoration: InputDecoration(
@@ -203,10 +269,12 @@ class _RegisterFormState extends State<RegisterForm> {
                 if(value!.isEmpty){
                   return "Enter a password";
                 }
-
                 if(value.length < 6){
                   return "Minimum number of characters is 6";
                 }
+                setState(() {
+                  password = value;
+                });
                 return null;
               },
               decoration: InputDecoration(
@@ -294,7 +362,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       _authData.getCurrentAddress().then((address){
                         if(address != null){
                           setState(() {
-                            _addressTextController.text = "${_authData.shopAddress}, ${_authData.shopStreet}, ${_authData.shopLocality}";
+                            _addressTextController.text = "${_authData.shopAddress}, ${_authData.shopLocality}";
                           });
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -327,6 +395,9 @@ class _RegisterFormState extends State<RegisterForm> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
+              onChanged: (value) {
+                _descriptionTextController.text = value;
+              },
               decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.comment),
                   labelText: "Business Description",
@@ -346,20 +417,49 @@ class _RegisterFormState extends State<RegisterForm> {
           ElevatedButton(
               onPressed: () {
                 if(_authData.isPicAvailable == true){
+
                   if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text("Processing Data")
-                        )
-                    );
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    _authData.registerVendor(email, password).then((credential){
+
+                      if(credential?.user?.uid != null){
+
+                        uploadFile(_authData.image?.path).then((url) {
+
+                          if(url != null){
+
+                            _authData.saveVendorataToDb(
+                              url: url,
+                              shopName: shopName,
+                              storePhoneNumber: storeMobile,
+                              ownerName: ownerName,
+                              ownerNumber: ownerMobile,
+                              description: _descriptionTextController.text
+                            ).then((value){
+                              setState(() {
+                                _formKey.currentState?.reset();
+                                _isLoading = false;
+                              });
+                              Navigator.pushReplacementNamed(context, HomeScreen.id);
+                            });
+
+
+                          } else {
+                            scaffoldMessage("Failed to upload Shop Profile Picture");
+                          }
+
+                        });
+
+                      } else {
+                        scaffoldMessage(_authData.error);
+                      }
+                    });
                   } else {
                   }
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text("Kindly add a Profile Picture")
-                      )
-                  );
+                  scaffoldMessage("Please add your shop's profile picture");
                 }
               },
               style: ElevatedButton.styleFrom(
