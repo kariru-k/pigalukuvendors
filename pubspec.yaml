@@ -47,6 +47,7 @@ dependencies:
   location: ^4.4.0
   email_validator: ^2.1.17
   flutter_geocoder: ^0.2.2-nullsafety
+  firebase_storage: ^11.0.11
 
 
 dev_dependencies:

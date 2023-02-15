@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_geocoder/geocoder.dart';
 import 'package:image_picker/image_picker.dart';
@@ -6,22 +8,23 @@ import 'package:location/location.dart';
 
 class AuthProvider extends ChangeNotifier{
 
-  late File? _image;
+  late File? image;
   bool isPicAvailable = false;
   final picker = ImagePicker();
   String? pickererror;
   double? shopLatitude;
   double? shopLongitude;
   String? shopAddress;
-  String? shopStreet;
   String? shopLocality;
+  String? error;
+  String? email;
 
 
   Future<File?> getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 20);
 
     if(pickedFile != null){
-      _image = File(pickedFile.path);
+      image = File(pickedFile.path);
       notifyListeners();
     } else {
       pickererror = "No image selected";
@@ -29,10 +32,9 @@ class AuthProvider extends ChangeNotifier{
       notifyListeners();
     }
 
-    return _image;
+    return image;
 
   }
-
 
   Future getCurrentAddress() async{
     Location location  = Location();
@@ -76,4 +78,68 @@ class AuthProvider extends ChangeNotifier{
 
   }
 
+  Future<UserCredential?> registerVendor(email, password) async{
+
+    this.email = email;
+    notifyListeners();
+
+    UserCredential? userCredential;
+    try {
+      userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password
+      );
+    } on FirebaseAuthException catch (e) {
+      if(e.code == "weak_password") {
+        error = e.code;
+        print("weak password");
+        notifyListeners();
+      } else if (e.code == "email-already-in-use"){
+        error = e.code;
+        print("account exists");
+        notifyListeners();
+      }
+    } catch (e) {
+      error = e.toString();
+      notifyListeners();
+      print(e);
+    }
+
+    return userCredential;
+  }
+
+  Future<void>saveVendorataToDb({
+    String? url,
+    String? shopName,
+    String? ownerName,
+    String? ownerNumber,
+    String? storePhoneNumber,
+    String? description
+  }) async{
+
+
+    User? user = FirebaseAuth.instance.currentUser;
+
+    DocumentReference _vendors = FirebaseFirestore.instance
+        .collection("vendors")
+        .doc(user?.uid);
+
+    _vendors.set({
+      'uid': user?.uid,
+      'shopName': shopName,
+      'ownerName': ownerName,
+      'email': email,
+      'ownerNumber': ownerNumber,
+      'storePhoneNumber': storePhoneNumber,
+      'description': description,
+      'address': "$shopAddress, $shopLocality",
+      'location': GeoPoint(shopLatitude!, shopLongitude!),
+      'shopOpen': true,
+      'rating': 0.00,
+      'totalRating': 0,
+      'isTopPicked': true
+    });
+
+    return;
+}
 }
