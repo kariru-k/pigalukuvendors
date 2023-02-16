@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:pigalukuvendors/providers/auth_provider.dart';
 import 'package:pigalukuvendors/screens/home_screen.dart';
+import 'package:pigalukuvendors/screens/register_screen.dart';
 import 'package:provider/provider.dart';
 
 class RegisterForm extends StatefulWidget {
@@ -68,8 +69,10 @@ class _RegisterFormState extends State<RegisterForm> {
       );
     }
 
-    return _isLoading ? CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+    return _isLoading ? Center(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+      ),
     ) : Form(
       key: _formKey,
       child: Column(
@@ -454,6 +457,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
                       } else {
                         scaffoldMessage(_authData.error);
+                        Navigator.pushReplacementNamed(context, RegisterScreen.id);
                       }
                     });
                   } else {

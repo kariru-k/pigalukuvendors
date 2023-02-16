@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pigalukuvendors/screens/login_screen.dart';
 import 'package:pigalukuvendors/screens/register_screen.dart';
 
 import 'home_screen.dart';
@@ -25,15 +26,19 @@ class _SplashScreenState extends State<SplashScreen> {
         ), () {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if(user==null){
-          Navigator.popAndPushNamed(context, RegisterScreen.id);
+          Navigator.pushReplacementNamed(context, LoginScreen.id);
         }else{
-          Navigator.popAndPushNamed(context, HomeScreen.id);
+          Navigator.pushReplacementNamed(context, HomeScreen.id);
         }
       });
     }
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

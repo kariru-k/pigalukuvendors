@@ -108,6 +108,30 @@ class AuthProvider extends ChangeNotifier{
     return userCredential;
   }
 
+
+  Future<UserCredential?> loginVendor(email, password) async{
+
+    this.email = email;
+    notifyListeners();
+
+    UserCredential? userCredential;
+    try {
+      userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password
+      );
+    } on FirebaseAuthException catch (e) {
+      error = e.code;
+      notifyListeners();
+    } catch (e) {
+      error = e.toString();
+      notifyListeners();
+      print(e);
+    }
+
+    return userCredential;
+  }
+
   Future<void>saveVendorataToDb({
     String? url,
     String? shopName,
@@ -126,6 +150,7 @@ class AuthProvider extends ChangeNotifier{
 
     _vendors.set({
       'uid': user?.uid,
+      'url': url,
       'shopName': shopName,
       'ownerName': ownerName,
       'email': email,
@@ -137,7 +162,8 @@ class AuthProvider extends ChangeNotifier{
       'shopOpen': true,
       'rating': 0.00,
       'totalRating': 0,
-      'isTopPicked': true
+      'isTopPicked': true,
+      'accVerified': true
     });
 
     return;
