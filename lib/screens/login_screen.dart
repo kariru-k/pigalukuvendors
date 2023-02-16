@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:pigalukuvendors/providers/auth_provider.dart';
 import 'package:pigalukuvendors/screens/home_screen.dart';
+import 'package:pigalukuvendors/screens/reset_password_screen.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -158,7 +159,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Expanded(
                         child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(context, ResetPassword.id);
+                            },
                             child: const Text(
                               "Forgot Password?",
                               textAlign: TextAlign.end,

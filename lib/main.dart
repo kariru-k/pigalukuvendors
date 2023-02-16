@@ -4,6 +4,7 @@ import 'package:pigalukuvendors/providers/auth_provider.dart';
 import 'package:pigalukuvendors/screens/home_screen.dart';
 import 'package:pigalukuvendors/screens/login_screen.dart';
 import 'package:pigalukuvendors/screens/register_screen.dart';
+import 'package:pigalukuvendors/screens/reset_password_screen.dart';
 import 'package:pigalukuvendors/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
         SplashScreen.id:(context)=> const SplashScreen(),
         RegisterScreen.id:(context) => const RegisterScreen(),
         HomeScreen.id:(context) => const HomeScreen(),
-        LoginScreen.id:(context) => const LoginScreen()
+        LoginScreen.id:(context) => const LoginScreen(),
+        ResetPassword.id:(context) => const ResetPassword()
       },
     );
   }

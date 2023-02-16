@@ -132,6 +132,23 @@ class AuthProvider extends ChangeNotifier{
     return userCredential;
   }
 
+
+  Future<void> resetPassword(email) async{
+
+    this.email = email;
+    notifyListeners();
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      error = e.code;
+      notifyListeners();
+    } catch (e) {
+      error = e.toString();
+      notifyListeners();
+      print(e);
+    }
+  }
+
   Future<void>saveVendorataToDb({
     String? url,
     String? shopName,
