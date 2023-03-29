@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pigalukuvendors/providers/auth_provider.dart';
+import 'package:pigalukuvendors/screens/add_new_product_screen.dart';
 import 'package:pigalukuvendors/screens/home_screen.dart';
 import 'package:pigalukuvendors/screens/login_screen.dart';
 import 'package:pigalukuvendors/screens/register_screen.dart';
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          primaryColor: Colors.deepPurpleAccent,
+          primarySwatch: Colors.deepPurple,
+          fontFamily: "Lato"
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: SplashScreen.id,
@@ -35,7 +37,8 @@ class MyApp extends StatelessWidget {
         RegisterScreen.id:(context) => const RegisterScreen(),
         HomeScreen.id:(context) => const HomeScreen(),
         LoginScreen.id:(context) => const LoginScreen(),
-        ResetPassword.id:(context) => const ResetPassword()
+        ResetPassword.id:(context) => const ResetPassword(),
+        AddNewProduct.id:(context) => const AddNewProduct()
       },
     );
   }

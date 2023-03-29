@@ -1,30 +1,65 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pigalukuvendors/screens/login_screen.dart';
+import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
+import 'package:pigalukuvendors/screens/dashboard_screen.dart';
+import 'package:pigalukuvendors/services/drawer_services.dart';
 
-class HomeScreen extends StatelessWidget {
+import '../widgets/drawer_menu_widget.dart';
+
+class HomeScreen extends StatefulWidget {
   static const String id = "home-screen";
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  DrawerServices _services = DrawerServices();
+  final GlobalKey<SliderDrawerState> _sliderDrawerKey =
+  GlobalKey<SliderDrawerState>();
+  String? title;
+
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Center(
-          child: ElevatedButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.pushReplacementNamed(context, LoginScreen.id);
-              },
-              child: const Text(
-                "LOG OUT",
-                style: TextStyle(
-                  fontFamily: "Anton"
-                ),
+    return Scaffold(
+        body: SliderDrawer(
+          appBar: SliderAppBar(
+              appBarHeight: 80,
+              appBarColor: Colors.deepPurple,
+              trailing: Row(
+                children: [
+                  IconButton(
+                      onPressed: () {},
+                      icon: Icon(CupertinoIcons.search)
+                  ),
+                  IconButton(
+                      onPressed: () {},
+                      icon: Icon(CupertinoIcons.bell)
+                  )
+                ],
+              ),
+              title: Text(title != null ? title.toString() : "Vendor Dashboard",
+                  style: const TextStyle(
+                      fontSize: 22,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700
+                  )
               )
           ),
-        ),
-      ),
+          key: _sliderDrawerKey,
+          sliderOpenSize: 250,
+          slider: SliderView(
+            onItemClick: (title) {
+              _sliderDrawerKey.currentState!.closeSlider();
+              setState(() {
+                this.title = title;
+              });
+            },
+          ),
+          child: _services.drawerScreen(title),
+        )
     );
   }
 }
