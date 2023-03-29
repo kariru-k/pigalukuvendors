@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:pigalukuvendors/providers/auth_provider.dart';
 import 'package:pigalukuvendors/screens/home_screen.dart';
+import 'package:pigalukuvendors/screens/register_screen.dart';
 import 'package:pigalukuvendors/screens/reset_password_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -212,6 +213,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontWeight: FontWeight.bold
                         ),
                       ),
+                    ),
+                  ),
+                  SizedBox(
+                    child: TextButton(
+                      child: Text("Register Instead"),
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, RegisterScreen.id);
+                      },
                     ),
                   )
                 ],

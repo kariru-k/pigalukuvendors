@@ -365,7 +365,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       _authData.getCurrentAddress().then((address){
                         if(address != null){
                           setState(() {
-                            _addressTextController.text = "${_authData.shopAddress}, ${_authData.shopLocality}";
+                            _addressTextController.text = "${_authData.shopAddress}, ${_authData.shopStreet}, ${_authData.shopSubLocality} ${_authData.shopLocality}";
                           });
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(

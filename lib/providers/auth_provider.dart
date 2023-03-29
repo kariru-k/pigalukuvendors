@@ -2,11 +2,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_geocoder/geocoder.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:location/location.dart';
+import 'package:location/location.dart' as loc;
+import 'package:geolocator/geolocator.dart';
 
-class AuthProvider extends ChangeNotifier{
+class AuthProvider extends ChangeNotifier {
 
   late File? image;
   bool isPicAvailable = false;
@@ -15,15 +16,17 @@ class AuthProvider extends ChangeNotifier{
   double? shopLatitude;
   double? shopLongitude;
   String? shopAddress;
+  String? shopStreet;
+  String? shopSubLocality;
   String? shopLocality;
   String? error;
   String? email;
 
-
   Future<File?> getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 20);
+    final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery, imageQuality: 20);
 
-    if(pickedFile != null){
+    if (pickedFile != null) {
       image = File(pickedFile.path);
       notifyListeners();
     } else {
@@ -33,84 +36,85 @@ class AuthProvider extends ChangeNotifier{
     }
 
     return image;
-
   }
 
-  Future getCurrentAddress() async{
-    Location location  = Location();
+  Future getCurrentAddress() async {
+    loc.Location location = loc.Location();
 
     bool serviceEnabled;
-    PermissionStatus permissionGranted;
-    LocationData locationData;
+    LocationPermission permissionGranted;
 
-    serviceEnabled = await location.serviceEnabled();
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
         return;
       }
     }
-
-    permissionGranted = await location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
+    permissionGranted = await Geolocator.checkPermission();
+    if (permissionGranted == LocationPermission.denied) {
+      permissionGranted = await Geolocator.requestPermission();
+      if (permissionGranted == LocationPermission.denied) {
+        return Future.error("Location Permissions are denied");
       }
     }
 
-    locationData = await location.getLocation();
+    Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high
+      );
 
-    shopLatitude = locationData.latitude!;
-    shopLongitude = locationData.longitude!;
+    shopLatitude = position.latitude;
+    shopLongitude = position.longitude;
     notifyListeners();
 
-    final coordinates = Coordinates(shopLatitude, shopLongitude);
-    var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    var addresses = await placemarkFromCoordinates(
+        shopLatitude!, shopLongitude!);
     var first = addresses.first;
-    shopAddress = first.addressLine;
-    shopLocality = first.featureName;
-    print("${first.featureName} : ${first.addressLine}");
+    shopAddress = first.name;
+    shopStreet = first.street;
+    shopSubLocality = first.subLocality;
+    shopLocality = first.locality;
+    print("${first.locality} : ${first.subLocality}");
+    print(shopAddress);
 
     notifyListeners();
 
     return shopAddress;
-
-  }
-
-  Future<UserCredential?> registerVendor(email, password) async{
-
-    this.email = email;
-    notifyListeners();
-
-    UserCredential? userCredential;
-    try {
-      userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email,
-          password: password
-      );
-    } on FirebaseAuthException catch (e) {
-      if(e.code == "weak_password") {
-        error = e.code;
-        print("weak password");
-        notifyListeners();
-      } else if (e.code == "email-already-in-use"){
-        error = e.code;
-        print("account exists");
-        notifyListeners();
-      }
-    } catch (e) {
-      error = e.toString();
-      notifyListeners();
-      print(e);
     }
 
-    return userCredential;
+  Future<UserCredential?> registerVendor(email, password) async {
+      this.email = email;
+      notifyListeners();
+
+      UserCredential? userCredential;
+      try {
+        userCredential =
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: email,
+            password: password
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == "weak_password") {
+          error = e.code;
+          print("weak password");
+          notifyListeners();
+        } else if (e.code == "email-already-in-use") {
+          error = e.code;
+          print("account exists");
+          notifyListeners();
+        }
+      } catch (e) {
+        error = e.toString();
+        notifyListeners();
+        print(e);
+      }
+
+      return userCredential;
   }
 
 
-  Future<UserCredential?> loginVendor(email, password) async{
-
+  Future<UserCredential?> loginVendor(email, password) async {
     this.email = email;
     notifyListeners();
 
@@ -132,33 +136,29 @@ class AuthProvider extends ChangeNotifier{
     return userCredential;
   }
 
-
-  Future<void> resetPassword(email) async{
-
-    this.email = email;
-    notifyListeners();
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-    } on FirebaseAuthException catch (e) {
-      error = e.code;
+  Future<void> resetPassword(email) async {
+      this.email = email;
       notifyListeners();
-    } catch (e) {
-      error = e.toString();
-      notifyListeners();
-      print(e);
-    }
+      try {
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      } on FirebaseAuthException catch (e) {
+        error = e.code;
+        notifyListeners();
+      } catch (e) {
+        error = e.toString();
+        notifyListeners();
+        print(e);
+      }
   }
 
-  Future<void>saveVendorataToDb({
+  Future<void> saveVendorataToDb({
     String? url,
     String? shopName,
     String? ownerName,
     String? ownerNumber,
     String? storePhoneNumber,
     String? description
-  }) async{
-
-
+  }) async {
     User? user = FirebaseAuth.instance.currentUser;
 
     DocumentReference _vendors = FirebaseFirestore.instance
@@ -184,5 +184,5 @@ class AuthProvider extends ChangeNotifier{
     });
 
     return;
-}
+  }
 }

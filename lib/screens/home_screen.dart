@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pigalukuvendors/screens/login_screen.dart';
-import 'package:pigalukuvendors/screens/register_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String id = "home-screen";
