@@ -41,26 +41,6 @@ class AddNewProduct extends StatelessWidget {
                 ),
               ),
             ),
-            TabBar(
-              labelColor: Colors.black,
-              indicatorColor: Theme.of(context).primaryColor,
-              tabs: [
-                Tab(text: "PUBLISHED",),
-                Tab(text: "UNPUBLISHED",)
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  Center(
-                    child: Text("Published Products"),
-                  ),
-                  Center(
-                    child: Text("Unpublished Products"),
-                  )
-                ],
-              ),
-            )
           ],
         ),
       ),
