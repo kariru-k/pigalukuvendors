@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pigalukuvendors/providers/auth_provider.dart';
+import 'package:pigalukuvendors/providers/products_provider.dart';
 import 'package:pigalukuvendors/screens/add_new_product_screen.dart';
 import 'package:pigalukuvendors/screens/home_screen.dart';
 import 'package:pigalukuvendors/screens/login_screen.dart';
@@ -14,7 +15,8 @@ void main() async{
   await Firebase.initializeApp();
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (_) => AuthProvider())
+      ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ChangeNotifierProvider(create: (_) => ProductProvider())
     ],
     child: const MyApp(),
   ));

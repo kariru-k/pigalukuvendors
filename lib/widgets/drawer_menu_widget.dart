@@ -57,7 +57,7 @@ class _SliderViewState extends State<SliderView> {
                     backgroundColor: Colors.grey,
                     child: CircleAvatar(
                       radius: 30,
-                      backgroundImage: NetworkImage(vendorData != null ? vendorData.data()["url"] : null),
+                      backgroundImage: NetworkImage(vendorData != null ? vendorData.data()["url"] : "images/pigaluku_logo.png"),
                       ),
                     ),
                   SizedBox(width: 10,),
