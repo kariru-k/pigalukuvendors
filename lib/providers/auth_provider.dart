@@ -171,8 +171,8 @@ class AuthProvider extends ChangeNotifier {
       'shopOpen': true,
       'rating': 0.00,
       'totalRating': 0,
-      'isTopPicked': true,
-      'accVerified': true
+      'isTopPicked': false,
+      'accVerified': false
     });
 
     return;

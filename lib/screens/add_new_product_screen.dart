@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:pigalukuvendors/providers/products_provider.dart';
 import 'package:pigalukuvendors/widgets/category_list.dart';
@@ -36,6 +37,11 @@ class _AddNewProductState extends State<AddNewProduct> {
   final List<MultiSelectItem<TrouserSize>> _trouserSizes = trouserSizes.map((value) => MultiSelectItem<TrouserSize>(value, value.size.toString())).toList();
   final _categoryTextController = TextEditingController();
   final _subcategoryTextController = TextEditingController();
+  final _productNameTextController = TextEditingController();
+  final _descriptionTextController = TextEditingController();
+  final _brandTextController = TextEditingController();
+  final _itemCodeTextController = TextEditingController();
+  final _priceTextController = TextEditingController();
   File? _image;
   bool _visiblecategory = false;
   bool _visiblesubcategory = false;
@@ -156,11 +162,26 @@ class _AddNewProductState extends State<AddNewProduct> {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               if(_image != null){
-                                provider.uploadProductImage(_image, productName).then((url){
+                                EasyLoading.show(status: "Saving...");
+                                provider.uploadProductImage(_image!.path, productName).then((url){
                                   if(url != null){
                                     //Upload product data to firestore
-
+                                    EasyLoading.dismiss();
+                                    provider.saveProductDataToDb(
+                                        productName: _productNameTextController.text,
+                                        description: _descriptionTextController.text,
+                                        brand: _brandTextController.text,
+                                        price: _priceTextController.text,
+                                        collection: collectiondropdownValue,
+                                        gender: genderdropdownValue,
+                                        itemCode: _itemCodeTextController.text,
+                                        quantity: quantities,
+                                        category: _categoryTextController.text,
+                                        subcategory: _subcategoryTextController.text,
+                                        context: context,
+                                    );
                                   } else {
+                                    EasyLoading.dismiss();
                                     //Upload failed
                                     provider.alertDialog(
                                         context: context,
@@ -220,6 +241,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
+                                controller: _productNameTextController,
                                 validator: (value) {
                                   if(value!.isEmpty){
                                     return "Enter Product Name";
@@ -250,6 +272,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
+                                controller: _descriptionTextController,
                                 validator: (value) {
                                   if(value!.isEmpty){
                                     return "Enter Description";
@@ -280,7 +303,8 @@ class _AddNewProductState extends State<AddNewProduct> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
-                                keyboardType: TextInputType.number,
+                                controller: _brandTextController,
+                                keyboardType: TextInputType.name,
                                 decoration: const InputDecoration(
                                     labelText: "Brand",//Price before discount
                                     labelStyle: TextStyle(
@@ -302,6 +326,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
+                                controller: _priceTextController,
                                 keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
                                     labelText: "Price",
@@ -349,10 +374,10 @@ class _AddNewProductState extends State<AddNewProduct> {
                                     }).toList(),
                                     onChanged: (String? value){
                                       setState(() {
-                                        genderdropdownValue = value;
+                                        collectiondropdownValue = value;
                                       });
                                     },
-                                    value: genderdropdownValue,
+                                    value: collectiondropdownValue,
                                     icon: const Icon(Icons.arrow_drop_down_circle_sharp),
 
                                   )
@@ -391,6 +416,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
+                                controller: _itemCodeTextController,
                                 keyboardType: TextInputType.number,
                                 validator: (value) {
                                   if(value!.isEmpty){

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pigalukuvendors/providers/auth_provider.dart';
 import 'package:pigalukuvendors/providers/products_provider.dart';
 import 'package:pigalukuvendors/screens/add_new_product_screen.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.deepPurple,
           fontFamily: "Lato"
       ),
+      builder: EasyLoading.init(),
       debugShowCheckedModeBanner: false,
       initialRoute: SplashScreen.id,
       routes: {

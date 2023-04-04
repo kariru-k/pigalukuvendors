@@ -72,7 +72,7 @@ class _CategoryListState extends State<CategoryList> {
                       ),
                       title: Text(data['name']),
                       onTap: () {
-                        provider.selectCategory(data['name']);
+                        provider.selectCategory(data['name'], data['image']);
                         Navigator.of(context).pop();
                       },
                     );
