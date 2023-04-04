@@ -3,6 +3,8 @@ import 'package:pigalukuvendors/providers/products_provider.dart';
 import 'package:pigalukuvendors/widgets/category_list.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/subcategory_list.dart';
+
 class AddNewProduct extends StatefulWidget {
   static const String id = 'add-new-product-screen';
   const AddNewProduct({Key? key}) : super(key: key);
@@ -25,6 +27,7 @@ class _AddNewProductState extends State<AddNewProduct> {
 
 
   var _categoryTextController = TextEditingController();
+  var _subcategoryTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -98,11 +101,16 @@ class _AddNewProductState extends State<AddNewProduct> {
                                         labelStyle: TextStyle(
                                           color: Colors.grey
                                         ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Colors.grey,
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: Colors.grey,
+                                              )
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: Colors.grey,
+                                              )
                                           )
-                                        )
                                       ),
                                     ),
                                   ),
@@ -113,6 +121,11 @@ class _AddNewProductState extends State<AddNewProduct> {
                                           labelText: "Description",
                                           labelStyle: TextStyle(
                                               color: Colors.grey
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: Colors.grey,
+                                              )
                                           ),
                                           enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -141,6 +154,11 @@ class _AddNewProductState extends State<AddNewProduct> {
                                           labelStyle: TextStyle(
                                               color: Colors.grey
                                           ),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: Colors.grey,
+                                              )
+                                          ),
                                           enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 color: Colors.grey,
@@ -157,6 +175,11 @@ class _AddNewProductState extends State<AddNewProduct> {
                                           labelText: "Compared Price",//Price before discount
                                           labelStyle: TextStyle(
                                               color: Colors.grey
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: Colors.grey,
+                                              )
                                           ),
                                           enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -206,6 +229,11 @@ class _AddNewProductState extends State<AddNewProduct> {
                                           labelStyle: TextStyle(
                                               color: Colors.grey
                                           ),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: Colors.grey,
+                                              )
+                                          ),
                                           enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 color: Colors.grey,
@@ -222,6 +250,11 @@ class _AddNewProductState extends State<AddNewProduct> {
                                           labelText: "Item Code",//Price before discount
                                           labelStyle: TextStyle(
                                               color: Colors.grey
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: Colors.grey,
+                                              )
                                           ),
                                           enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -252,6 +285,11 @@ class _AddNewProductState extends State<AddNewProduct> {
                                                 labelStyle: TextStyle(
                                                     color: Colors.grey
                                                 ),
+                                                focusedBorder: OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                    )
+                                                ),
                                                 enabledBorder: OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       color: Colors.grey,
@@ -272,6 +310,59 @@ class _AddNewProductState extends State<AddNewProduct> {
                                                   _categoryTextController.text = _provider.selectedCategory;
                                                 });
                                               });
+                                            },
+                                            icon: Icon(Icons.edit_outlined)
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Sub Category",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 16
+                                          ),
+                                        ),
+                                        SizedBox(width: 10,),
+                                        Expanded(
+                                          child: TextFormField(
+                                            controller: _subcategoryTextController,
+                                            decoration: InputDecoration(
+                                                labelText: "Subcategory",
+                                                hintText: "No SubCategory Selected",
+                                                labelStyle: TextStyle(
+                                                    color: Colors.grey
+                                                ),
+                                                focusedBorder: OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                    )
+                                                ),
+                                                enabledBorder: OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                    )
+                                                )
+                                            ),
+                                          ),
+                                        ),
+                                        IconButton(
+                                            onPressed: (){
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context){
+                                                    return SubCategoryList();
+                                                  }
+                                              ).whenComplete((){
+                                                setState(() {
+                                                  _subcategoryTextController.text = _provider.selectedSubCategory;
+                                                });
+                                              });
+;
                                             },
                                             icon: Icon(Icons.edit_outlined)
                                         )
