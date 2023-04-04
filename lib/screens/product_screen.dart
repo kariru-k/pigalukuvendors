@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pigalukuvendors/screens/add_new_product_screen.dart';
+import 'package:pigalukuvendors/widgets/published_product.dart';
+import 'package:pigalukuvendors/widgets/unpublished_products.dart';
 
 
 class ProductScreen extends StatelessWidget {
@@ -68,12 +70,8 @@ class ProductScreen extends StatelessWidget {
             const Expanded(
               child: TabBarView(
                 children: [
-                  Center(
-                    child: Text("Published Products"),
-                  ),
-                  Center(
-                    child: Text("Unpublished Products"),
-                  )
+                  PublishedProducts(),
+                  UnpublishedProducts()
                 ],
               ),
             )
