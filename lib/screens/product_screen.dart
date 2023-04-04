@@ -3,6 +3,7 @@ import 'package:pigalukuvendors/screens/add_new_product_screen.dart';
 
 
 class ProductScreen extends StatelessWidget {
+  static const String id = 'product-screen';
   const ProductScreen({Key? key}) : super(key: key);
 
   @override

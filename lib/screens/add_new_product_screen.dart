@@ -180,6 +180,21 @@ class _AddNewProductState extends State<AddNewProduct> {
                                         subcategory: _subcategoryTextController.text,
                                         context: context,
                                     );
+                                    setState(() {
+                                      _formKey.currentState!.reset();
+                                      _itemCodeTextController.clear();
+                                      _subcategoryTextController.clear();
+                                      _categoryTextController.clear();
+                                      _priceTextController.clear();
+                                      _descriptionTextController.clear();
+                                      _productNameTextController.clear();
+                                      _brandTextController.clear();
+                                      collectiondropdownValue = null;
+                                      genderdropdownValue = null;
+                                      _image = null;
+                                      _visiblecategory = false;
+                                      _visiblesubcategory = false;
+                                    });
                                   } else {
                                     EasyLoading.dismiss();
                                     //Upload failed

@@ -6,6 +6,7 @@ import 'package:pigalukuvendors/providers/products_provider.dart';
 import 'package:pigalukuvendors/screens/add_new_product_screen.dart';
 import 'package:pigalukuvendors/screens/home_screen.dart';
 import 'package:pigalukuvendors/screens/login_screen.dart';
+import 'package:pigalukuvendors/screens/product_screen.dart';
 import 'package:pigalukuvendors/screens/register_screen.dart';
 import 'package:pigalukuvendors/screens/reset_password_screen.dart';
 import 'package:pigalukuvendors/screens/splash_screen.dart';
@@ -42,7 +43,8 @@ class MyApp extends StatelessWidget {
         HomeScreen.id:(context) => const HomeScreen(),
         LoginScreen.id:(context) => const LoginScreen(),
         ResetPassword.id:(context) => const ResetPassword(),
-        AddNewProduct.id:(context) => const AddNewProduct()
+        AddNewProduct.id:(context) => const AddNewProduct(),
+        ProductScreen.id:(context) => const ProductScreen()
       },
     );
   }

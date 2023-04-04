@@ -91,7 +91,7 @@ class ProductProvider with ChangeNotifier{
         required category,
         required subcategory,
       }){
-    var timeStamp = DateTime.now();
+    var timeStamp = DateTime.now().microsecondsSinceEpoch;
     User? user = FirebaseAuth.instance.currentUser;
     CollectionReference products = FirebaseFirestore.instance.collection("products");
     try {
@@ -113,7 +113,7 @@ class ProductProvider with ChangeNotifier{
         },
         "quantity": quantity,
         "published": false,
-        "productId": timeStamp,
+        "productId": timeStamp.toString(),
         "productImage": producturl
       });
       alertDialog(
