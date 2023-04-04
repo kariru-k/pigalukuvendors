@@ -49,6 +49,7 @@ class _AddNewProductState extends State<AddNewProduct> {
   File? _image;
   bool _visiblecategory = false;
   bool _visiblesubcategory = false;
+  bool _track = false;
 
 
 
@@ -484,8 +485,87 @@ class _AddNewProductState extends State<AddNewProduct> {
                             )
                           ],
                         ),
-                        Center(
-                          child: Text("Inventory"),
+                        SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              SwitchListTile(
+                                title: Text("Track Inventory"),
+                                subtitle: Text(
+                                  "Switch ON to track Inventory",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12
+                                  ),
+                                ),
+                                activeColor: Theme.of(context).primaryColor,
+                                onChanged: (selected) {
+                                  setState(() {
+                                    _track = !_track;
+                                  });
+                                },
+                                value: _track,
+                              ),
+                              Visibility(
+                                visible: _track,
+                                child: SizedBox(
+                                  height: 300,
+                                  width: double.infinity,
+                                  child: Card(
+                                    elevation: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextField(
+                                              decoration: InputDecoration(
+                                                  labelText: "Inventory Quantity",
+                                                  labelStyle: TextStyle(
+                                                      color: Colors.grey
+                                                  ),
+                                                  focusedBorder: OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                      )
+                                                  ),
+                                                  enabledBorder: OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                      )
+                                                  )
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextField(
+                                              decoration: InputDecoration(
+                                                  labelText: "Inventory Low Stock Quantity",
+                                                  labelStyle: TextStyle(
+                                                      color: Colors.grey
+                                                  ),
+                                                  focusedBorder: OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                      )
+                                                  ),
+                                                  enabledBorder: OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                      )
+                                                  )
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),
