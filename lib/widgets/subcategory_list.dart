@@ -13,14 +13,14 @@ class SubCategoryList extends StatefulWidget {
 
 class _SubCategoryListState extends State<SubCategoryList> {
 
-  FirebaseServices _services = FirebaseServices();
+  final FirebaseServices _services = FirebaseServices();
 
 
   @override
   Widget build(BuildContext context) {
 
 
-    var _provider = Provider.of<ProductProvider>(context);
+    var provider = Provider.of<ProductProvider>(context);
 
 
     return Dialog(
@@ -34,7 +34,7 @@ class _SubCategoryListState extends State<SubCategoryList> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Select Subcategory",
                     style: TextStyle(
                         color: Colors.white,
@@ -45,17 +45,17 @@ class _SubCategoryListState extends State<SubCategoryList> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.close, color: Colors.white,)
+                      icon: const Icon(Icons.close, color: Colors.white,)
                   )
                 ],
               ),
             ),
           ),
           FutureBuilder<DocumentSnapshot>(
-            future: _services.category.doc(_provider.selectedCategory).get(),
+            future: _services.category.doc(provider.selectedCategory).get(),
             builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
               if (snapshot.hasError) {
-                return Text('Something went wrong');
+                return const Text('Something went wrong');
               }
 
               if (snapshot.connectionState == ConnectionState.done) {
@@ -69,37 +69,35 @@ class _SubCategoryListState extends State<SubCategoryList> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            Text("Main Category: ",),
+                            const Text("Main Category: ",),
                             FittedBox(
                               child: Text(
-                                _provider.selectedCategory,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                provider.selectedCategory,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                             )
                           ],
                         ),
                       ),
-                      Divider(thickness: 3,),
-                      Container(
-                        child: Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ListView.builder(
-                              itemBuilder: (BuildContext context, int index){
-                                return ListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  leading: CircleAvatar(
-                                    child: Text("${index + 1}"),
-                                  ),
-                                  title: Text(data['subCat'][index]['name']),
-                                  onTap: () {
-                                    _provider.selectSubCategory(data['subCat'][index]['name']);
-                                    Navigator.pop(context);
-                                  },
-                                );
-                              },
-                              itemCount: data["subCat"] == null ? 0 : data["subCat"].length,
-                            ),
+                      const Divider(thickness: 3,),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListView.builder(
+                            itemBuilder: (BuildContext context, int index){
+                              return ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: CircleAvatar(
+                                  child: Text("${index + 1}"),
+                                ),
+                                title: Text(data['subCat'][index]['name']),
+                                onTap: () {
+                                  provider.selectSubCategory(data['subCat'][index]['name']);
+                                  Navigator.pop(context);
+                                },
+                              );
+                            },
+                            itemCount: data["subCat"] == null ? 0 : data["subCat"].length,
                           ),
                         ),
                       )
@@ -109,7 +107,7 @@ class _SubCategoryListState extends State<SubCategoryList> {
 
               }
 
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
 

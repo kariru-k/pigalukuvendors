@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _authData = Provider.of<AuthProvider>(context);
+    final authData = Provider.of<AuthProvider>(context);
 
 
     scaffoldMessage(message){
@@ -188,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             setState(() {
                               _loading = true;
                             });
-                            _authData.loginVendor(_emailTextController.text, _passwordTextController.text).then((credential){
+                            authData.loginVendor(_emailTextController.text, _passwordTextController.text).then((credential){
                               if(credential != null){
                                 setState(() {
                                   _loading = false;
@@ -198,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 setState(() {
                                   _loading = false;
                                 });
-                                scaffoldMessage(_authData.error);
+                                scaffoldMessage(authData.error);
                               }
                             });
                           } else {
@@ -218,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(
                       child: TextButton(
-                        child: Text("Register Instead"),
+                        child: const Text("Register Instead"),
                         onPressed: () {
                           Navigator.pushReplacementNamed(context, RegisterScreen.id);
                         },

@@ -21,37 +21,35 @@ class ProductScreen extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
-                      child: Container(
-                        child: Row(
-                          children: [
-                            Text("Products"),
-                            SizedBox(width: 10,),
-                            CircleAvatar(
-                              backgroundColor: Colors.black54,
-                              maxRadius: 8,
-                              child: FittedBox(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6),
-                                  child: Text(
-                                    "20",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold
-                                  ),
-                                  ),
+                      child: Row(
+                        children: const [
+                          Text("Products"),
+                          SizedBox(width: 10,),
+                          CircleAvatar(
+                            backgroundColor: Colors.black54,
+                            maxRadius: 8,
+                            child: FittedBox(
+                              child: Padding(
+                                padding: EdgeInsets.all(6),
+                                child: Text(
+                                  "20",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold
+                                ),
                                 ),
                               ),
-                            )
-                          ],
-                        ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                     ElevatedButton.icon(
                         onPressed: () {
                           Navigator.pushNamed(context, AddNewProduct.id);
                         },
-                        icon: Icon(Icons.add, color: Colors.white,),
-                        label: Text("Add New Product")
+                        icon: const Icon(Icons.add, color: Colors.white,),
+                        label: const Text("Add New Product")
                     )
                   ],
                 ),
@@ -61,12 +59,12 @@ class ProductScreen extends StatelessWidget {
               labelColor: Theme.of(context).primaryColor,
               indicatorColor: Theme.of(context).primaryColor,
               unselectedLabelColor: Colors.black54,
-              tabs: [
+              tabs: const [
                 Tab(text: "PUBLISHED",),
                 Tab(text: "UNPUBLISHED",)
               ],
             ),
-            Expanded(
+            const Expanded(
               child: TabBarView(
                 children: [
                   Center(

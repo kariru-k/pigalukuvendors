@@ -17,11 +17,11 @@ class SliderMenuItem extends StatelessWidget {
     return InkWell(
       onTap: () {
         onTap?.call(title);
-        print(title);
       },
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           border: Border(
+            // ignore: prefer_const_constructors
             bottom: BorderSide(
               color: Colors.grey
             )
@@ -34,8 +34,8 @@ class SliderMenuItem extends StatelessWidget {
             child: Row(
               children: [
                 Icon(iconData, color: Colors.black54, size: 18,),
-                SizedBox(width: 10,),
-                Text(title, style: TextStyle(color: Colors.black54, fontSize: 16),)
+                const SizedBox(width: 10,),
+                Text(title, style: const TextStyle(color: Colors.black54, fontSize: 16),)
               ],
             ),
           ),

@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  DrawerServices _services = DrawerServices();
+  final DrawerServices _services = DrawerServices();
   final GlobalKey<SliderDrawerState> _sliderDrawerKey =
   GlobalKey<SliderDrawerState>();
   String? title;
@@ -31,11 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   IconButton(
                       onPressed: () {},
-                      icon: Icon(CupertinoIcons.search)
+                      icon: const Icon(CupertinoIcons.search)
                   ),
                   IconButton(
                       onPressed: () {},
-                      icon: Icon(CupertinoIcons.bell)
+                      icon: const Icon(CupertinoIcons.bell)
                   )
                 ],
               ),

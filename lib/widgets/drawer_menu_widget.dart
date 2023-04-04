@@ -31,7 +31,6 @@ class _SliderViewState extends State<SliderView> {
     setState(() {
       vendorData = result;
     });
-    print(result.data()!["shopName"]);
 
     return result;
   }
@@ -60,11 +59,11 @@ class _SliderViewState extends State<SliderView> {
                       backgroundImage: NetworkImage(vendorData != null ? vendorData.data()["url"] : "images/pigaluku_logo.png"),
                       ),
                     ),
-                  SizedBox(width: 10,),
+                  const SizedBox(width: 10,),
                   Text(
                     vendorData != null ?  vendorData.data()["shopName"]  : "Shop Name",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 25,

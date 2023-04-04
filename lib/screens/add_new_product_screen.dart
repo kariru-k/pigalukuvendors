@@ -22,13 +22,13 @@ class _AddNewProductState extends State<AddNewProduct> {
 
   final _formKey = GlobalKey<FormState>();
 
-  List<String> _collections = [
+  final List<String> _collections = [
     "Featured Products",
     "Best Selling",
     "Recently Added"
   ];
 
-  List<String> _genders = [
+  final List<String> _genders = [
     "Male",
     "Female",
     "Unisex"
@@ -38,25 +38,30 @@ class _AddNewProductState extends State<AddNewProduct> {
   String? genderdropdownValue;
 
 
-  List<MultiSelectItem<ClothSize>> _clothsizes = clothsizes.map((value) => MultiSelectItem<ClothSize>(value, value.size)).toList();
-  List<MultiSelectItem<ShoeSize>> _shoesizes = shoeSizes.map((value) => MultiSelectItem<ShoeSize>(value, value.size.toString())).toList();
-  List<MultiSelectItem<TrouserSize>> _trouserSizes = trouserSizes.map((value) => MultiSelectItem<TrouserSize>(value, value.size.toString())).toList();
+  final List<MultiSelectItem<ClothSize>> _clothsizes = clothsizes.map((value) => MultiSelectItem<ClothSize>(value, value.size)).toList();
+  final List<MultiSelectItem<ShoeSize>> _shoesizes = shoeSizes.map((value) => MultiSelectItem<ShoeSize>(value, value.size.toString())).toList();
+  final List<MultiSelectItem<TrouserSize>> _trouserSizes = trouserSizes.map((value) => MultiSelectItem<TrouserSize>(value, value.size.toString())).toList();
 
 
 
-  var _categoryTextController = TextEditingController();
-  var _subcategoryTextController = TextEditingController();
+  final _categoryTextController = TextEditingController();
+  final _subcategoryTextController = TextEditingController();
   File? _image;
   bool _visiblecategory = false;
   bool _visiblesubcategory = false;
   bool _track = false;
+
+  String? productName;
+  String? description;
+  double? price;
+  double? comparedPrice;
 
 
 
   @override
   Widget build(BuildContext context) {
 
-    var _provider = Provider.of<ProductProvider>(context);
+    var provider = Provider.of<ProductProvider>(context);
 
     List<MultiSelectItem> getItems(category, subcategory){
       if(category == "Clothes"){
@@ -71,6 +76,7 @@ class _AddNewProductState extends State<AddNewProduct> {
     }
 
     return DefaultTabController(
+      initialIndex: 1,
       length: 2,
       child: Scaffold(
         appBar: AppBar(
@@ -78,7 +84,7 @@ class _AddNewProductState extends State<AddNewProduct> {
               onPressed: (){
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.arrow_back_sharp)
+              icon: const Icon(Icons.arrow_back_sharp)
           ),
         ),
         body: Form(
@@ -92,16 +98,14 @@ class _AddNewProductState extends State<AddNewProduct> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Container(
-                          child: Text("Products"),
-                        ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 8.0),
+                        child: Text("Products"),
                       ),
                       ElevatedButton.icon(
                           onPressed: () {},
-                          icon: Icon(Icons.save, color: Colors.white,),
-                          label: Text("Save")
+                          icon: const Icon(Icons.save, color: Colors.white,),
+                          label: const Text("Save")
                       )
                     ],
                   ),
@@ -111,7 +115,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                 labelColor: Theme.of(context).primaryColor,
                 indicatorColor: Theme.of(context).primaryColor,
                 unselectedLabelColor: Colors.black54,
-                tabs: [
+                tabs: const [
                   Tab(text: "GENERAL",),
                   Tab(text: "INVENTORY",)
                 ],
@@ -131,11 +135,20 @@ class _AddNewProductState extends State<AddNewProduct> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: TextFormField(
-                                      decoration: InputDecoration(
-                                        labelText: "Product Name",
-                                        labelStyle: TextStyle(
-                                          color: Colors.grey
-                                        ),
+                                      validator: (value) {
+                                        if(value!.isEmpty){
+                                          return "Enter Product Name";
+                                        }
+                                        setState(() {
+                                          productName = value;
+                                        });
+                                        return null;
+                                      },
+                                      decoration: const InputDecoration(
+                                          labelText: "Product Name",
+                                          labelStyle: TextStyle(
+                                              color: Colors.grey
+                                          ),
                                           focusedBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 color: Colors.grey,
@@ -152,7 +165,16 @@ class _AddNewProductState extends State<AddNewProduct> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: TextFormField(
-                                      decoration: InputDecoration(
+                                      validator: (value) {
+                                        if(value!.isEmpty){
+                                          return "Enter Description";
+                                        }
+                                        setState(() {
+                                          description = value;
+                                        });
+                                        return null;
+                                      },
+                                      decoration: const InputDecoration(
                                           labelText: "Description",
                                           labelStyle: TextStyle(
                                               color: Colors.grey
@@ -174,7 +196,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: InkWell(
                                       onTap: () {
-                                        _provider.getProductImage().then((image){
+                                        provider.getProductImage().then((image){
                                           setState(() {
                                             _image = image;
                                           });
@@ -184,7 +206,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                                         width: 150,
                                         height: 150,
                                         child: Card(
-                                          child: _image == null ? Center(child: Text("Add Product Image")) : Image.file(_image as File),
+                                          child: _image == null ? const Center(child: Text("Add Product Image")) : Image.file(_image as File),
                                         ),
                                       ),
                                     ),
@@ -193,7 +215,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                           labelText: "Price",
                                           labelStyle: TextStyle(
                                               color: Colors.grey
@@ -209,119 +231,80 @@ class _AddNewProductState extends State<AddNewProduct> {
                                               )
                                           )
                                       ),
+                                      validator: (value) {
+                                        if(value!.isEmpty){
+                                          return "Enter Price";
+                                        }
+                                        setState(() {
+                                          price = double.parse(value);
+                                        });
+                                        return null;
+                                      },
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: TextFormField(
-                                      keyboardType: TextInputType.number,
-                                      decoration: InputDecoration(
-                                          labelText: "Compared Price",//Price before discount
-                                          labelStyle: TextStyle(
-                                              color: Colors.grey
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Colors.grey,
-                                              )
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Colors.grey,
-                                              )
-                                          )
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "Collection",
-                                            style: TextStyle(color: Colors.grey),
-                                          ),
-                                          SizedBox(width: 10,),
-                                          DropdownButton<String>(
-                                            hint: Text("Select Collection"),
-                                            items: _collections.map<DropdownMenuItem<String>>((String value){
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                            onChanged: (String? value){
-                                              setState(() {
-                                                genderdropdownValue = value;
-                                              });
-                                            },
-                                            value: genderdropdownValue,
-                                            icon: Icon(Icons.arrow_drop_down_circle_sharp),
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Collection",
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                        const SizedBox(width: 10,),
+                                        DropdownButton<String>(
+                                          hint: const Text("Select Collection"),
+                                          items: _collections.map<DropdownMenuItem<String>>((String value){
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? value){
+                                            setState(() {
+                                              genderdropdownValue = value;
+                                            });
+                                          },
+                                          value: genderdropdownValue,
+                                          icon: const Icon(Icons.arrow_drop_down_circle_sharp),
 
-                                          )
-                                        ],
-                                      ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "Gender",
-                                            style: TextStyle(color: Colors.grey),
-                                          ),
-                                          SizedBox(width: 10,),
-                                          DropdownButton<String>(
-                                            hint: Text("Select Gender of clothes"),
-                                            items: _genders.map<DropdownMenuItem<String>>((String value){
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                            onChanged: (String? value){
-                                              setState(() {
-                                                genderdropdownValue = value;
-                                              });
-                                            },
-                                            value: genderdropdownValue,
-                                            icon: Icon(Icons.arrow_drop_down_circle_sharp),
+                                    child: Row(
+                                      children: [
+                                        const Text(
+                                          "Gender",
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                        const SizedBox(width: 10,),
+                                        DropdownButton<String>(
+                                          hint: const Text("Select Gender of clothes"),
+                                          items: _genders.map<DropdownMenuItem<String>>((String value){
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? value){
+                                            setState(() {
+                                              genderdropdownValue = value;
+                                            });
+                                          },
+                                          value: genderdropdownValue,
+                                          icon: const Icon(Icons.arrow_drop_down_circle_sharp),
 
-                                          )
-                                        ],
-                                      ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
-                                      decoration: InputDecoration(
-                                          labelText: "Brand",//Price before discount
-                                          labelStyle: TextStyle(
-                                              color: Colors.grey
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Colors.grey,
-                                              )
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Colors.grey,
-                                              )
-                                          )
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: TextFormField(
-                                      keyboardType: TextInputType.number,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                           labelText: "Item Code",//Price before discount
                                           labelStyle: TextStyle(
                                               color: Colors.grey
@@ -343,18 +326,18 @@ class _AddNewProductState extends State<AddNewProduct> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(
                                       children: [
-                                        Text(
+                                        const Text(
                                             "Category",
                                           style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 16
                                           ),
                                         ),
-                                        SizedBox(width: 10,),
+                                        const SizedBox(width: 10,),
                                         Expanded(
                                           child: TextFormField(
                                             controller: _categoryTextController,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                                 labelText: "Category", //Price before discount
                                                 hintText: "No Category Selected",
                                                 labelStyle: TextStyle(
@@ -378,16 +361,16 @@ class _AddNewProductState extends State<AddNewProduct> {
                                               showDialog(
                                                   context: context,
                                                   builder: (BuildContext context){
-                                                    return CategoryList();
+                                                    return const CategoryList();
                                                   }
                                               ).whenComplete((){
                                                 setState(() {
-                                                  _categoryTextController.text = _provider.selectedCategory;
+                                                  _categoryTextController.text = provider.selectedCategory;
                                                   _visiblecategory = true;
                                                 });
                                               });
                                             },
-                                            icon: Icon(Icons.edit_outlined)
+                                            icon: const Icon(Icons.edit_outlined)
                                         )
                                       ],
                                     ),
@@ -398,18 +381,18 @@ class _AddNewProductState extends State<AddNewProduct> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
                                         children: [
-                                          Text(
+                                          const Text(
                                             "Sub Category",
                                             style: TextStyle(
                                               color: Colors.grey,
                                               fontSize: 16
                                             ),
                                           ),
-                                          SizedBox(width: 10,),
+                                          const SizedBox(width: 10,),
                                           Expanded(
                                             child: TextFormField(
                                               controller: _subcategoryTextController,
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                   labelText: "Subcategory",
                                                   hintText: "No SubCategory Selected",
                                                   labelStyle: TextStyle(
@@ -433,16 +416,16 @@ class _AddNewProductState extends State<AddNewProduct> {
                                                 showDialog(
                                                     context: context,
                                                     builder: (BuildContext context){
-                                                      return SubCategoryList();
+                                                      return const SubCategoryList();
                                                     }
                                                 ).whenComplete((){
                                                   setState(() {
-                                                    _subcategoryTextController.text = _provider.selectedSubCategory;
+                                                    _subcategoryTextController.text = provider.selectedSubCategory;
                                                     _visiblesubcategory = true;
                                                   });
                                                 });
                                               },
-                                              icon: Icon(Icons.edit_outlined)
+                                              icon: const Icon(Icons.edit_outlined)
                                           )
                                         ],
                                       ),
@@ -453,14 +436,14 @@ class _AddNewProductState extends State<AddNewProduct> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: MultiSelectDialogField(
-                                        buttonText: Text(
+                                        buttonText: const Text(
                                           "Select Size",
                                           style: TextStyle(
                                             fontWeight: FontWeight.normal,
                                             color: Colors.grey
                                           ),
                                         ),
-                                        title: Text("Sizes"),
+                                        title: const Text("Sizes"),
                                         items: getItems(_categoryTextController.text, _subcategoryTextController.text),
                                         decoration: BoxDecoration(
                                           border: Border.all(
@@ -489,8 +472,8 @@ class _AddNewProductState extends State<AddNewProduct> {
                           child: Column(
                             children: [
                               SwitchListTile(
-                                title: Text("Track Inventory"),
-                                subtitle: Text(
+                                title: const Text("Track Inventory"),
+                                subtitle: const Text(
                                   "Switch ON to track Inventory",
                                   style: TextStyle(
                                     color: Colors.grey,
@@ -515,9 +498,9 @@ class _AddNewProductState extends State<AddNewProduct> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Column(
-                                        children: [
+                                        children: const [
                                           Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                            padding: EdgeInsets.all(8.0),
                                             child: TextField(
                                               decoration: InputDecoration(
                                                   labelText: "Inventory Quantity",
@@ -538,7 +521,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                                             ),
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                            padding: EdgeInsets.all(8.0),
                                             child: TextField(
                                               decoration: InputDecoration(
                                                   labelText: "Inventory Low Stock Quantity",

@@ -13,14 +13,14 @@ class CategoryList extends StatefulWidget {
 
 class _CategoryListState extends State<CategoryList> {
 
-  FirebaseServices _services = FirebaseServices();
+  final FirebaseServices _services = FirebaseServices();
 
 
   @override
   Widget build(BuildContext context) {
 
 
-    var _provider = Provider.of<ProductProvider>(context);
+    var provider = Provider.of<ProductProvider>(context);
 
 
     return Dialog(
@@ -34,7 +34,7 @@ class _CategoryListState extends State<CategoryList> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Select Category",
                     style: TextStyle(
                       color: Colors.white,
@@ -45,7 +45,7 @@ class _CategoryListState extends State<CategoryList> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.close, color: Colors.white,)
+                      icon: const Icon(Icons.close, color: Colors.white,)
                   )
                 ],
               ),
@@ -55,11 +55,11 @@ class _CategoryListState extends State<CategoryList> {
             stream: _services.category.snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if (snapshot.hasError) {
-                return Text('Something went wrong');
+                return const Text('Something went wrong');
               }
 
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
 
               return Expanded(
@@ -72,7 +72,7 @@ class _CategoryListState extends State<CategoryList> {
                       ),
                       title: Text(data['name']),
                       onTap: () {
-                        _provider.selectCategory(data['name']);
+                        provider.selectCategory(data['name']);
                         Navigator.of(context).pop();
                       },
                     );

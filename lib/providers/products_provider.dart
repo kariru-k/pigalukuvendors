@@ -16,12 +16,12 @@ class ProductProvider with ChangeNotifier{
 
 
   selectCategory(selected){
-    this.selectedCategory = selected;
+    selectedCategory = selected;
     notifyListeners();
   }
 
   selectSubCategory(selected){
-    this.selectedSubCategory = selected;
+    selectedSubCategory = selected;
     notifyListeners();
   }
 
@@ -34,7 +34,6 @@ class ProductProvider with ChangeNotifier{
       notifyListeners();
     } else {
       pickererror = "No image selected";
-      print("No image selected");
       notifyListeners();
     }
 

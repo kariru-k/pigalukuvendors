@@ -31,7 +31,6 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     } else {
       pickererror = "No image selected";
-      print("No image selected");
       notifyListeners();
     }
 
@@ -75,8 +74,6 @@ class AuthProvider extends ChangeNotifier {
     shopStreet = first.street;
     shopSubLocality = first.subLocality;
     shopLocality = first.locality;
-    print("${first.locality} : ${first.subLocality}");
-    print(shopAddress);
 
     notifyListeners();
 
@@ -97,17 +94,14 @@ class AuthProvider extends ChangeNotifier {
       } on FirebaseAuthException catch (e) {
         if (e.code == "weak_password") {
           error = e.code;
-          print("weak password");
           notifyListeners();
         } else if (e.code == "email-already-in-use") {
           error = e.code;
-          print("account exists");
           notifyListeners();
         }
       } catch (e) {
         error = e.toString();
         notifyListeners();
-        print(e);
       }
 
       return userCredential;
@@ -130,7 +124,6 @@ class AuthProvider extends ChangeNotifier {
     } catch (e) {
       error = e.toString();
       notifyListeners();
-      print(e);
     }
 
     return userCredential;
@@ -147,7 +140,6 @@ class AuthProvider extends ChangeNotifier {
       } catch (e) {
         error = e.toString();
         notifyListeners();
-        print(e);
       }
   }
 
@@ -161,11 +153,11 @@ class AuthProvider extends ChangeNotifier {
   }) async {
     User? user = FirebaseAuth.instance.currentUser;
 
-    DocumentReference _vendors = FirebaseFirestore.instance
+    DocumentReference vendors = FirebaseFirestore.instance
         .collection("vendors")
         .doc(user?.uid);
 
-    _vendors.set({
+    vendors.set({
       'uid': user?.uid,
       'url': url,
       'shopName': shopName,

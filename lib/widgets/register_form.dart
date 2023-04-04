@@ -37,17 +37,16 @@ class _RegisterFormState extends State<RegisterForm> {
     File file = File(filePath);
 
 
-    FirebaseStorage _storage = FirebaseStorage.instance;
+    FirebaseStorage storage = FirebaseStorage.instance;
 
     try {
-      await _storage
+      await storage
           .ref("uploads/shopProfilePic/${_shopNameTextController.text}").putFile(file);
-      ;
-    } on FirebaseException catch(e) {
-      print(e.code);
+    } on FirebaseException {
+
     }
 
-    String downloadUrl = await _storage
+    String downloadUrl = await storage
         .ref("uploads/shopProfilePic/${_shopNameTextController.text}")
         .getDownloadURL();
 
@@ -58,7 +57,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-    final _authData = Provider.of<AuthProvider>(context);
+    final authData = Provider.of<AuthProvider>(context);
 
 
     scaffoldMessage(message){
@@ -347,7 +346,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 if(value!.isEmpty){
                   return "Enter the Business Location";
                 }
-                if (_authData.shopLatitude == null) {
+                if (authData.shopLatitude == null) {
                   return "Enter the Business Location";
                 }  
                 
@@ -362,10 +361,10 @@ class _RegisterFormState extends State<RegisterForm> {
                     icon: const Icon(Icons.location_searching_sharp),
                     onPressed: () {
                       _addressTextController.text = "Locating... \n Please wait...";
-                      _authData.getCurrentAddress().then((address){
+                      authData.getCurrentAddress().then((address){
                         if(address != null){
                           setState(() {
-                            _addressTextController.text = "${_authData.shopAddress}, ${_authData.shopStreet}, ${_authData.shopSubLocality} ${_authData.shopLocality}";
+                            _addressTextController.text = "${authData.shopAddress}, ${authData.shopStreet}, ${authData.shopSubLocality} ${authData.shopLocality}";
                           });
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -419,21 +418,21 @@ class _RegisterFormState extends State<RegisterForm> {
           const SizedBox(height: 20,),
           ElevatedButton(
               onPressed: () {
-                if(_authData.isPicAvailable == true){
+                if(authData.isPicAvailable == true){
 
                   if (_formKey.currentState!.validate()) {
                     setState(() {
                       _isLoading = true;
                     });
-                    _authData.registerVendor(email, password).then((credential){
+                    authData.registerVendor(email, password).then((credential){
 
                       if(credential?.user?.uid != null){
 
-                        uploadFile(_authData.image?.path).then((url) {
+                        uploadFile(authData.image?.path).then((url) {
 
                           if(url != null){
 
-                            _authData.saveVendorataToDb(
+                            authData.saveVendorataToDb(
                               url: url,
                               shopName: shopName,
                               storePhoneNumber: storeMobile,
@@ -456,7 +455,7 @@ class _RegisterFormState extends State<RegisterForm> {
                         });
 
                       } else {
-                        scaffoldMessage(_authData.error);
+                        scaffoldMessage(authData.error);
                         Navigator.pushReplacementNamed(context, RegisterScreen.id);
                       }
                     });

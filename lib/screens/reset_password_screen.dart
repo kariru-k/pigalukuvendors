@@ -24,7 +24,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   @override
   Widget build(BuildContext context) {
-    final _authData = Provider.of<AuthProvider>(context);
+    final authData = Provider.of<AuthProvider>(context);
 
 
 
@@ -119,7 +119,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         setState(() {
                           _loading = true;
                         });
-                        _authData.resetPassword(_emailTextController.text);
+                        authData.resetPassword(_emailTextController.text);
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text("Email sent successfully, check to reset password")

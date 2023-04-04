@@ -17,11 +17,11 @@ class RegisterScreen extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              ShopPicCard(),
-              RegisterForm(),
+              const ShopPicCard(),
+              const RegisterForm(),
               SizedBox(
                 child: TextButton(
-                  child: Text("Login Instead"),
+                  child: const Text("Login Instead"),
                   onPressed: () {
                     Navigator.pushReplacementNamed(context, LoginScreen.id);
                   },
