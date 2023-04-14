@@ -41,6 +41,8 @@ class _SliderViewState extends State<SliderView> {
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<ProductProvider>(context);
+
+
     provider.getShopName(vendorData != null ? vendorData.data()["shopName"] : "");
 
     return Container(

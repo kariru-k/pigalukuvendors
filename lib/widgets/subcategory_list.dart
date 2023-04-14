@@ -72,7 +72,7 @@ class _SubCategoryListState extends State<SubCategoryList> {
                             const Text("Main Category: ",),
                             FittedBox(
                               child: Text(
-                                provider.selectedCategory,
+                                provider.selectedCategory.toString(),
                                 style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                             )

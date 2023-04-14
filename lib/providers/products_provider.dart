@@ -1,4 +1,6 @@
 
+// ignore_for_file: empty_catches
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,8 +11,8 @@ import 'package:image_picker/image_picker.dart';
 
 class ProductProvider with ChangeNotifier{
 
-  String selectedCategory = 'not selected';
-  String selectedSubCategory = 'not selected';
+  String? selectedCategory;
+  String? selectedSubCategory;
   String? categoryImage;
   final picker = ImagePicker();
   late File? image;
@@ -52,7 +54,6 @@ class ProductProvider with ChangeNotifier{
     return image;
   }
 
-
   Future<String?>uploadProductImage(filePath, productName) async {
     File file = File(filePath);
     var timeStamp = Timestamp.now();
@@ -76,6 +77,14 @@ class ProductProvider with ChangeNotifier{
     return downloadUrl;
   }
 
+  resetProvider() {
+    selectedCategory = null;
+    selectedSubCategory = null;
+    categoryImage = null;
+    image = null;
+    producturl = null;
+    notifyListeners();
+  }
 
   Future<void>?saveProductDataToDb(
       {
@@ -103,7 +112,7 @@ class ProductProvider with ChangeNotifier{
         "productName": productName,
         "description": description,
         "brand": brand,
-        "price": price,
+        "price": int.parse(price),
         "collection": collection,
         "gender": gender,
         "itemCode": itemCode,
@@ -114,7 +123,55 @@ class ProductProvider with ChangeNotifier{
         "quantity": quantity,
         "published": false,
         "productId": timeStamp.toString(),
-        "productImage": producturl
+        "productImage": producturl ?? image,
+      });
+      alertDialog(
+          context: context,
+          title: "SAVE DATA",
+          content: "Product Details saved successfully"
+      );
+    } on Exception catch (e) {
+      alertDialog(
+          context: context,
+          title: "Error Saving data",
+          content: e.toString()
+      );
+    }
+    return null;
+  }
+
+  Future<void>?updateProduct(
+      {
+        required productName,
+        required description,
+        required brand,
+        required price,
+        required collection,
+        required gender,
+        required itemCode,
+        required quantity,
+        required context,
+        required category,
+        required subcategory,
+        required productId,
+        required image
+      }){
+    CollectionReference products = FirebaseFirestore.instance.collection("products");
+    try {
+      products.doc(productId).update({
+        "productName": productName,
+        "description": description,
+        "brand": brand,
+        "price": price,
+        "collection": collection,
+        "gender": gender,
+        "itemCode": itemCode,
+        "category": {
+          'categoryName': category,
+          'subCategoryName': subcategory,
+        },
+        "quantity": quantity,
+        "productImage": image,
       });
       alertDialog(
           context: context,

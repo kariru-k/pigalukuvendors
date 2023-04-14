@@ -68,11 +68,11 @@ class PublishedProducts extends StatelessWidget {
     return PopupMenuButton<String>(
       onSelected: (String value) {
 
-        FirebaseServices _services = FirebaseServices();
+        FirebaseServices services = FirebaseServices();
 
 
         if (value == "Unpublish") {
-          _services.unpublishProduct(
+          services.unpublishProduct(
               id: data["productId"]
           );
         }

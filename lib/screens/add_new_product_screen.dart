@@ -70,14 +70,11 @@ class _AddNewProductState extends State<AddNewProduct> {
     try {
       int number = int.parse(text);
       quantities[item] = number;
-      print(quantities);
     } on FormatException {}
   }
 
   Widget singleFormField(int index, TextEditingController controller){
-
     var size = sizes[index];
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -122,7 +119,6 @@ class _AddNewProductState extends State<AddNewProduct> {
         ],
       ),
     );
-
   }
 
   @override
@@ -166,35 +162,40 @@ class _AddNewProductState extends State<AddNewProduct> {
                                 provider.uploadProductImage(_image!.path, productName).then((url){
                                   if(url != null){
                                     //Upload product data to firestore
-                                    EasyLoading.dismiss();
-                                    provider.saveProductDataToDb(
-                                        productName: _productNameTextController.text,
-                                        description: _descriptionTextController.text,
-                                        brand: _brandTextController.text,
-                                        price: _priceTextController.text,
-                                        collection: collectiondropdownValue,
-                                        gender: genderdropdownValue,
-                                        itemCode: _itemCodeTextController.text,
-                                        quantity: quantities,
-                                        category: _categoryTextController.text,
-                                        subcategory: _subcategoryTextController.text,
-                                        context: context,
-                                    );
-                                    setState(() {
-                                      _formKey.currentState!.reset();
-                                      _itemCodeTextController.clear();
-                                      _subcategoryTextController.clear();
-                                      _categoryTextController.clear();
-                                      _priceTextController.clear();
-                                      _descriptionTextController.clear();
-                                      _productNameTextController.clear();
-                                      _brandTextController.clear();
-                                      collectiondropdownValue = null;
-                                      genderdropdownValue = null;
-                                      _image = null;
-                                      _visiblecategory = false;
-                                      _visiblesubcategory = false;
-                                    });
+                                    try {
+                                      provider.saveProductDataToDb(
+                                          productName: _productNameTextController.text,
+                                          description: _descriptionTextController.text,
+                                          brand: _brandTextController.text,
+                                          price: _priceTextController.text,
+                                          collection: collectiondropdownValue,
+                                          gender: genderdropdownValue,
+                                          itemCode: _itemCodeTextController.text,
+                                          quantity: quantities,
+                                          category: _categoryTextController.text,
+                                          subcategory: _subcategoryTextController.text,
+                                          context: context,
+                                      );
+                                      setState(() {
+                                        _formKey.currentState!.reset();
+                                        _itemCodeTextController.clear();
+                                        _subcategoryTextController.clear();
+                                        _categoryTextController.clear();
+                                        _priceTextController.clear();
+                                        _descriptionTextController.clear();
+                                        _productNameTextController.clear();
+                                        _brandTextController.clear();
+                                        collectiondropdownValue = null;
+                                        genderdropdownValue = null;
+                                        _image = null;
+                                        _visiblecategory = false;
+                                        _visiblesubcategory = false;
+                                      });
+                                      EasyLoading.dismiss();
+                                    } on Exception catch (e) {
+                                      EasyLoading.dismiss();
+                                      print(e.toString());
+                                    }
                                   } else {
                                     EasyLoading.dismiss();
                                     //Upload failed
@@ -512,7 +513,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                                             }
                                         ).whenComplete((){
                                           setState(() {
-                                            _categoryTextController.text = provider.selectedCategory;
+                                            _categoryTextController.text = provider.selectedCategory!;
                                             _visiblecategory = true;
                                           });
                                         });
@@ -576,7 +577,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                                               }
                                           ).whenComplete((){
                                             setState(() {
-                                              _subcategoryTextController.text = provider.selectedSubCategory;
+                                              _subcategoryTextController.text = provider.selectedSubCategory!;
                                               _visiblesubcategory = true;
                                             });
                                           });
@@ -615,6 +616,7 @@ class _AddNewProductState extends State<AddNewProduct> {
                                   },
                                   onConfirm: (value) {
                                     setState(() {
+                                      print(sizes);
                                       sizes = value;
                                     });
                                   },

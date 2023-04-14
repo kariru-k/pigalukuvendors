@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pigalukuvendors/screens/edit_view_product.dart';
 import 'package:pigalukuvendors/services/firebase_services.dart';
 
 class UnpublishedProducts extends StatelessWidget {
@@ -24,35 +25,53 @@ class UnpublishedProducts extends StatelessWidget {
         }
 
         return SingleChildScrollView(
-          child: DataTable(
-              showBottomBorder: true,
-              dataRowHeight: 100,
-              headingRowColor: MaterialStateProperty.all(Colors.grey[200]),
-              columns: const <DataColumn>[
-                DataColumn(label: Text("Product Name")),
-                DataColumn(label: Text("Image")),
-                DataColumn(label: Text("Actions")),
-              ],
-              rows: _productDetails(snapshot.data!)
+          child: FittedBox(
+            child: DataTable(
+                showBottomBorder: true,
+                dataRowHeight: 100,
+                headingRowColor: MaterialStateProperty.all(Colors.grey[200]),
+                columns: const <DataColumn>[
+                  DataColumn(label: Text("Product Name")),
+                  DataColumn(label: Text("Image")),
+                  DataColumn(label: Text("Info")),
+                  DataColumn(label: Text("Actions")),
+                ],
+                rows: _productDetails(snapshot.data!, context)
+            ),
           ),
         );
       },
     );
   }
 
-  List<DataRow>_productDetails(QuerySnapshot snapshot){
+  List<DataRow>_productDetails(QuerySnapshot snapshot, context){
     List<DataRow> newList = snapshot.docs.map((DocumentSnapshot? document){
       return DataRow(
           cells: [
             DataCell(
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(document!['productName']),
-                  subtitle: Text("Item Code: " + document['itemCode']),
+                  title: Text(document!['productName'], style: const TextStyle(fontSize: 20),),
+                  subtitle: Text("Item Code: " + document["productId"], style: const TextStyle(fontSize: 15)),
                 )
             ),
             DataCell(
-                Image.network(document['productImage'], height: 50, width: 50,)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                      children: [
+                        Image.network(document['productImage'], height: 75, width: 75,),
+                      ]
+                  ),
+                )
+            ),
+            DataCell(
+              IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => EditViewProduct(productId: document["productId"])));
+                },
+                icon: const Icon(Icons.info_outline),
+              )
             ),
             DataCell(
               popUpButton(document)
@@ -68,17 +87,17 @@ class UnpublishedProducts extends StatelessWidget {
     return PopupMenuButton<String>(
       onSelected: (String value) {
 
-        FirebaseServices _services = FirebaseServices();
+        FirebaseServices services = FirebaseServices();
 
 
         if (value == "publish") {
-          _services.publishProduct(
+          services.publishProduct(
               id: data["productId"]
           );
         }
 
         if (value == "delete") {
-          _services.deleteProduct(
+          services.deleteProduct(
               id: data["productId"]
           );
         }
@@ -96,24 +115,10 @@ class UnpublishedProducts extends StatelessWidget {
             )
         ),
         const PopupMenuItem<String>(
-            value: "preview",
-            child: ListTile(
-              leading: Icon(Icons.info_outline),
-              title: Text("Preview"),
-            )
-        ),
-        const PopupMenuItem<String>(
-            value: "Edit",
-            child: ListTile(
-              leading: Icon(Icons.edit_outlined),
-              title: Text("Edit Product Details"),
-            )
-        ),
-        const PopupMenuItem<String>(
-            value: "Edit",
+            value: "Delete",
             child: ListTile(
               leading: Icon(Icons.delete_outline),
-              title: Text("Edit Product Details"),
+              title: Text("Delete Product Details"),
             )
         )
       ],
