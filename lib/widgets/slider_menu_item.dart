@@ -6,10 +6,13 @@ class SliderMenuItem extends StatelessWidget {
   final Function(String)? onTap;
 
   const SliderMenuItem(
-      {Key? key,
+      {
+        Key? key,
         required this.title,
         required this.iconData,
-        required this.onTap})
+        required this.onTap
+      }
+      )
       : super(key: key);
 
   @override

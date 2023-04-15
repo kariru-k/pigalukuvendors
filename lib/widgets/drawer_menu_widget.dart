@@ -83,12 +83,10 @@ class _SliderViewState extends State<SliderView> {
           const SizedBox(
             height: 20,
           ),
-          const SizedBox(
-            height: 20,
-          ),
           ...[
             Menu(Icons.dashboard_customize_outlined, 'Dashboard'),
             Menu(Icons.shopping_bag_outlined, 'Product'),
+            Menu(CupertinoIcons.photo, "Banner"),
             Menu(CupertinoIcons.gift, 'Coupons'),
             Menu(Icons.list_alt_outlined, 'Orders'),
             Menu(Icons.stacked_bar_chart, 'Reports'),

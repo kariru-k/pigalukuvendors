@@ -100,7 +100,6 @@ class _EditViewProductState extends State<EditViewProduct> {
   Widget build(BuildContext context) {
 
     var provider = Provider.of<ProductProvider>(context);
-    provider.resetProvider();
 
 
     List<MultiSelectItem> getItems(category, subcategory){
@@ -178,7 +177,6 @@ class _EditViewProductState extends State<EditViewProduct> {
                           }
                         });
                       }  else {
-                        EasyLoading.dismiss();
                         provider.updateProduct(
                             productName: productNameText.text,
                             description: descriptionText.text,
@@ -192,9 +190,10 @@ class _EditViewProductState extends State<EditViewProduct> {
                             category: _categoryTextController.text,
                             subcategory: _subCategoryTextController.text,
                             productId: widget.productId,
-                            image: image
-                        );
+                            image: image);
+                        EasyLoading.dismiss();
                       }
+                      provider.resetProvider();
                     }
                   },
                   child: AbsorbPointer(
