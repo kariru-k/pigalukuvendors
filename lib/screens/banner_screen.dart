@@ -9,6 +9,8 @@ import 'package:pigalukuvendors/providers/products_provider.dart';
 import 'package:pigalukuvendors/services/firebase_services.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/banner_card.dart';
+
 class BannerScreen extends StatefulWidget {
   const BannerScreen({Key? key}) : super(key: key);
 
@@ -36,12 +38,7 @@ class _BannerScreenState extends State<BannerScreen> {
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
-          SizedBox(
-            height: 200,
-            child: Card(
-              color: Colors.grey[200],
-            ),
-          ),
+          const BannerCard(),
           const Divider(thickness: 3,),
           const SizedBox(height: 20,),
           const Center(
@@ -135,9 +132,13 @@ class _BannerScreenState extends State<BannerScreen> {
                                 ),
                                 onPressed: () {
                                   EasyLoading.show(status: "Saving Image");
-                                  uploadProductImage(_image!.path, provider.shopName).then((url){
+                                  uploadBannerImage(_image!.path, provider.shopName).then((url){
                                     if (url != null) {
                                       services.saveBanner(url);
+                                      setState(() {
+                                        _imagePathText.clear();
+                                        _image = null;
+                                      });
                                       EasyLoading.dismiss();
                                       provider.alertDialog(
                                           context: context,
@@ -217,7 +218,7 @@ class _BannerScreenState extends State<BannerScreen> {
     return _image;
   }
 
-  Future<String?>uploadProductImage(filePath, shopName) async {
+  Future<String?>uploadBannerImage(filePath, shopName) async {
     File file = File(filePath);
     var timeStamp = Timestamp.now();
 

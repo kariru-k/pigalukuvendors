@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 class FirebaseServices {
+
+  User? user = FirebaseAuth.instance.currentUser;
+
   CollectionReference category = FirebaseFirestore.instance.collection("category");
   CollectionReference products = FirebaseFirestore.instance.collection("products");
   CollectionReference vendorbanner = FirebaseFirestore.instance.collection("vendorbanner");
@@ -25,8 +29,13 @@ class FirebaseServices {
 
   Future<void>saveBanner(url){
     return vendorbanner.add({
-      'imageurl': url
+      'imageurl': url,
+      'sellerUid': user!.uid
     });
+  }
+
+  Future<void>deleteBanner({required id}){
+    return vendorbanner.doc(id).delete();
   }
 
 }
