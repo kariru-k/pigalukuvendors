@@ -52,7 +52,7 @@ class UnpublishedProducts extends StatelessWidget {
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(document!['productName'], style: const TextStyle(fontSize: 20),),
-                  subtitle: Text("Item Code: " + document["productId"], style: const TextStyle(fontSize: 15)),
+                  subtitle: Text("Item Code: ${document["productId"]}", style: const TextStyle(fontSize: 15)),
                 )
             ),
             DataCell(

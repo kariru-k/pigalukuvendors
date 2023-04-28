@@ -88,7 +88,6 @@ class _EditViewProductState extends State<EditViewProduct> {
 
           sizes.sort();
 
-          print(quantities);
         });
       }
     });
@@ -551,14 +550,13 @@ class _EditViewProductState extends State<EditViewProduct> {
                             return null;
                           },
                           onConfirm: (value) {
-                            value.forEach((element) {
+                            for (var element in value) {
                               if(quantities.containsKey(element) == false){
                                 setState(() {
                                   quantities[element.size.toString()] = 0;
-                                  print(quantities);
                                 });
                               }
-                            });
+                            }
                           },
                           onSelectionChanged: (value) {
                             setState(() {

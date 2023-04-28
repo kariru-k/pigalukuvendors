@@ -91,7 +91,7 @@ class _SliderViewState extends State<SliderView> {
             Menu(Icons.list_alt_outlined, 'Orders'),
             Menu(Icons.stacked_bar_chart, 'Reports'),
             Menu(Icons.settings_outlined, 'Setting'),
-            Menu(Icons.arrow_back_ios, 'LogOut')
+            Menu(Icons.arrow_back_ios, 'Log Out')
           ]
               .map((menu) => SliderMenuItem(
               title: menu.title,

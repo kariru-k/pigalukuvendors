@@ -212,7 +212,6 @@ class _BannerScreenState extends State<BannerScreen> {
         _image = File(pickedFile.path);
       });
     } else {
-      print("No Image Selected");
     }
 
     return _image;

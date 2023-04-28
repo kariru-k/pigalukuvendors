@@ -48,7 +48,7 @@ class PublishedProducts extends StatelessWidget {
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(document!['productName']),
-                  subtitle: Text("Item Code: " + document['itemCode']),
+                  subtitle: Text("Item Code: + ${document['itemCode']}"),
                 )
             ),
             DataCell(

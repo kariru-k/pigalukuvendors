@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
               });
             },
           ),
-          child: _services.drawerScreen(title),
+          child: _services.drawerScreen(title, context),
         )
     );
   }

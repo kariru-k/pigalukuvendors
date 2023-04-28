@@ -53,12 +53,10 @@ class _AddNewProductState extends State<AddNewProduct> {
   final List<TextEditingController> _controllers =  [];
 
   List<MultiSelectItem> getItems(category, subcategory){
-    if(category == "Clothes"){
-      if (subcategory == "Jeans" || subcategory == "Trousers") {
-        return _trouserSizes;
-      } else {
-        return _clothsizes;
-      }
+    if(category == "Female Pants" || category == "Jeans" || category == "Men's Pants"){
+      return _trouserSizes;
+    } else if (category == "Shirts" || category == "Sweaters" || category == "T-Shirts"){
+      return _clothsizes;
     } else {
       return _shoesizes;
     }
@@ -190,11 +188,16 @@ class _AddNewProductState extends State<AddNewProduct> {
                                         _image = null;
                                         _visiblecategory = false;
                                         _visiblesubcategory = false;
+                                        for(var controller in _controllers){
+                                          if(controller.text.isNotEmpty){
+                                            controller.clear();
+                                          }
+                                        }
+                                        sizes = [];
                                       });
                                       EasyLoading.dismiss();
-                                    } on Exception catch (e) {
+                                    } on Exception {
                                       EasyLoading.dismiss();
-                                      print(e.toString());
                                     }
                                   } else {
                                     EasyLoading.dismiss();
@@ -616,7 +619,6 @@ class _AddNewProductState extends State<AddNewProduct> {
                                   },
                                   onConfirm: (value) {
                                     setState(() {
-                                      print(sizes);
                                       sizes = value;
                                     });
                                   },

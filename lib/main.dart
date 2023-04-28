@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pigalukuvendors/providers/auth_provider.dart';
 import 'package:pigalukuvendors/providers/products_provider.dart';
+import 'package:pigalukuvendors/screens/add_edit_coupon_screen.dart';
 import 'package:pigalukuvendors/screens/add_new_product_screen.dart';
+import 'package:pigalukuvendors/screens/coupons_screen.dart';
 import 'package:pigalukuvendors/screens/home_screen.dart';
 import 'package:pigalukuvendors/screens/login_screen.dart';
 import 'package:pigalukuvendors/screens/product_screen.dart';
@@ -44,7 +46,9 @@ class MyApp extends StatelessWidget {
         LoginScreen.id:(context) => const LoginScreen(),
         ResetPassword.id:(context) => const ResetPassword(),
         AddNewProduct.id:(context) => const AddNewProduct(),
-        ProductScreen.id:(context) => const ProductScreen()
+        ProductScreen.id:(context) => const ProductScreen(),
+        CouponScreen.id:(context) => const CouponScreen(),
+        AddEditCoupon.id:(context) => const AddEditCoupon(document: null),
       },
     );
   }
