@@ -8,6 +8,7 @@ import 'package:pigalukuvendors/screens/product_screen.dart';
 
 import '../screens/banner_screen.dart';
 import '../screens/coupons_screen.dart';
+import '../screens/orders_screen.dart';
 
 class DrawerServices{
 
@@ -25,6 +26,12 @@ class DrawerServices{
     if (title == "Banner") {
       return const BannerScreen();
     }
+    if (title == "Orders") {
+      return const OrderScreen();
+    }
+
+
+
     if (title == "Log Out") {
       EasyLoading.show(status: "Signing Out");
       FirebaseAuth.instance.signOut().then((value){
