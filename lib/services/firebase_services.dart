@@ -73,13 +73,14 @@ class FirebaseServices {
     return doc;
   }
 
-  Future<void>selectDeliveryPerson({orderId, location, name, phoneNumber, image}){
+  Future<void>selectDeliveryPerson({orderId, location, name, phoneNumber, image, email}){
     var result = orders.doc(orderId).update({
       "deliveryBoy" : {
         "location": location,
         "name": name,
         "phone": phoneNumber,
-        "image": image
+        "image": image,
+        "email": email
       }
     });
 

@@ -106,7 +106,8 @@ class _DeliveryPersonListState extends State<DeliveryPersonList> {
                                 phoneNumber: document["phoneNumber"],
                                 location: location,
                                 image: document["url"],
-                                name: document["name"]
+                                name: document["name"],
+                                email: document["email"]
                               ).then((value){
                                 EasyLoading.showSuccess("Assigned Delivery Person");
                                 Navigator.pop(context);
