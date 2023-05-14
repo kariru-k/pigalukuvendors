@@ -10,7 +10,10 @@ class FirebaseServices {
   CollectionReference products = FirebaseFirestore.instance.collection("products");
   CollectionReference vendorbanner = FirebaseFirestore.instance.collection("vendorbanner");
   CollectionReference coupons = FirebaseFirestore.instance.collection("coupons");
-
+  CollectionReference deliveryPersons = FirebaseFirestore.instance.collection("deliverypersons");
+  CollectionReference vendors = FirebaseFirestore.instance.collection("vendors");
+  CollectionReference orders = FirebaseFirestore.instance.collection("orders");
+  CollectionReference customers = FirebaseFirestore.instance.collection("users");
 
   Future<void>publishProduct({required id}){
     return products.doc(id).update({
@@ -58,6 +61,29 @@ class FirebaseServices {
       "active": active,
       "sellerId": user!.uid
     });
+  }
+
+  Future<DocumentSnapshot>getShopDetails() async{
+    DocumentSnapshot doc = await vendors.doc(user!.uid).get();
+    return doc;
+  }
+
+  Future<DocumentSnapshot>getCustomerDetails(id) async{
+    DocumentSnapshot doc = await customers.doc(id).get();
+    return doc;
+  }
+
+  Future<void>selectDeliveryPerson({orderId, location, name, phoneNumber, image}){
+    var result = orders.doc(orderId).update({
+      "deliveryBoy" : {
+        "location": location,
+        "name": name,
+        "phone": phoneNumber,
+        "image": image
+      }
+    });
+
+    return result;
   }
 
 
