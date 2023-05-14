@@ -228,7 +228,7 @@ class _BannerScreenState extends State<BannerScreen> {
       await storage
           .ref("vendorbanner/$shopName$timeStamp").putFile(file);
     } on FirebaseException {
-
+      //
     }
 
     String downloadUrl = await storage

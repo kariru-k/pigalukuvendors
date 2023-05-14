@@ -22,7 +22,7 @@ class _OrderScreenState extends State<OrderScreen> {
   OrderServices orderServices = OrderServices();
   int tag = 0;
   List<String> options = [
-    'All Orders', "Ordered", "Rejected", "Cancelled", 'Accepted', 'Picked Up',
+    'All Orders', "Ordered", "Rejected", "Cancelled", 'Accepted', "Assigned a Delivery Person" ,'Picked Up',
     'On the Way', 'Delivered'
   ];
   User? user = FirebaseAuth.instance.currentUser;

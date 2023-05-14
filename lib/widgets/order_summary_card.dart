@@ -4,203 +4,76 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../services/firebase_services.dart';
 import '../services/order_services.dart';
 
-class OrderSummaryCard extends StatelessWidget {
+class OrderSummaryCard extends StatefulWidget {
   const OrderSummaryCard({Key? key, required this.data, required this.document}) : super(key: key);
   final Map<String, dynamic> data;
   final DocumentSnapshot document;
 
   @override
+  State<OrderSummaryCard> createState() => _OrderSummaryCardState();
+}
+
+class _OrderSummaryCardState extends State<OrderSummaryCard> {
+  OrderServices orderServices = OrderServices();
+  FirebaseServices firebaseServices = FirebaseServices();
+
+
+  DocumentSnapshot? customer;
+
+  Future<void> _launchUrl(number) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: number,
+    );
+    if (!await launchUrl(launchUri)) {
+      throw Exception('Could not launch $number');
+    }
+  }
+
+
+  @override
+  void initState() {
+    firebaseServices.getCustomerDetails(widget.data["userID"]).then((value){
+      setState(() {
+        customer = value;
+      });
+    });
+    super.initState();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
-
-    OrderServices orderServices = OrderServices();
-
-
-    Color statusColor(DocumentSnapshot document){
-      if (document["orderStatus"] == "Accepted") {
-        return Colors.blueGrey.shade400;
-      }
-      if (document["orderStatus"] == "Rejected" || document["orderStatus"] == "Cancelled") {
-        return Colors.red;
-      }
-      if (document["orderStatus"] == "Picked Up") {
-        return Colors.pink.shade900;
-      }
-      if (document["orderStatus"] == "On the way") {
-        return Colors.purple.shade900;
-      }
-      if (document["orderStatus"] == "Delivered") {
-        return Colors.green.shade900;
-      }
-      return Colors.orange;
-    }
-
-    showDialog({title, status, documentId}){
-      showCupertinoDialog(
-          context: context,
-          builder: (BuildContext context){
-            return CupertinoAlertDialog(
-              title: Text(title),
-              content: const Text("Are you sure?"),
-              actions: [
-                TextButton(
-                    onPressed: (){
-                      EasyLoading.show(status: "Updating order...");
-                      orderServices.updateOrderStatus(documentId, status).then((value){
-                        EasyLoading.showSuccess("Successfully updated order");
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      "OK",
-                      style: TextStyle(color: Theme.of(context).primaryColor),
-                    )
-                ),
-                TextButton(
-                    onPressed: (){
-                      EasyLoading.show(status: "Rejecting order...");
-                      orderServices.updateOrderStatus(documentId, status).then((value){
-                        EasyLoading.showSuccess("Successfully rejected the order");
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      "Cancel",
-                      style: TextStyle(color: Theme.of(context).primaryColor),
-                    )
-                )
-              ],
-            );
-          }
-      );
-    }
-
-    Widget statusContainer(data, document){
-      if (data["orderStatus"] == "Accepted") {
-        return Container(
-          color: Colors.grey.shade300,
-          width: MediaQuery.of(context).size.width,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextButton(
-                    onPressed: (){
-
-                    },
-                    style: TextButton.styleFrom(
-                        backgroundColor: Colors.blueGrey
-                    ),
-                    child: const Text(
-                      "Assign Delivery person",
-                      style: TextStyle(
-                          color: Colors.white
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextButton(
-                    onPressed: (){
-                      showDialog(title: "Cancel Order", status: "Cancelled", documentId: document.id);
-                    },
-                    style: TextButton.styleFrom(
-                        backgroundColor: Colors.red
-                    ),
-                    child: const Text(
-                      "Cancel",
-                      style: TextStyle(
-                          color: Colors.white
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-      if(data["orderStatus"] == "Ordered"){
-        return Container(
-          color: Colors.grey[300],
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextButton(
-                      onPressed: (){
-                        showDialog(title: "Accept Order", status: "Accepted", documentId: document.id);
-                      },
-                      style: TextButton.styleFrom(
-                          backgroundColor: Colors.blueGrey
-                      ),
-                      child: const Text(
-                        "Accept",
-                        style: TextStyle(
-                            color: Colors.white
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextButton(
-                      onPressed: (){
-                        showDialog(title: "Reject Order", status: "Rejected", documentId: document.id);
-                      },
-                      style: TextButton.styleFrom(
-                          backgroundColor: Colors.red
-                      ),
-                      child: const Text(
-                        "Reject",
-                        style: TextStyle(
-                            color: Colors.white
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      } else {
-        return Container();
-      }
-    }
-
     return Container(
       color: Colors.white,
       child: Column(
         children: [
           ListTile(
             horizontalTitleGap: 0,
-            leading: const CircleAvatar(
+            leading: CircleAvatar(
               radius: 14,
-              child: Icon(CupertinoIcons.square_list, size: 18, color: Colors.pinkAccent,),
+              backgroundColor: Colors.white,
+              child: Icon(
+                CupertinoIcons.square_list,
+                size: 18,
+                color: orderServices.statusColor(widget.document),
+              ),
             ),
             title: Text(
-              data["orderStatus"],
+              widget.data["orderStatus"],
               style: TextStyle(
                   fontSize: 18,
-                  color: statusColor(document),
+                  color: orderServices.statusColor(widget.document),
                   fontWeight: FontWeight.bold
               ),
             ),
             subtitle: Text(
-              "On ${DateFormat.yMMMd().format(DateTime.parse(data["timestamp"]))}",
+              "On ${DateFormat.yMMMd().format(DateTime.parse(widget.data["timestamp"]))}",
               style: const TextStyle(
                   fontSize: 12
               ),
@@ -219,7 +92,7 @@ class OrderSummaryCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        data["cod"]  ? "Cash on Delivery" : "Online Payment",
+                        widget.data["cod"]  ? "Cash on Delivery" : "Online Payment",
                         style: const TextStyle(
                             color: Colors.purpleAccent,
                             fontWeight: FontWeight.bold
@@ -229,7 +102,7 @@ class OrderSummaryCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "Amount: Kshs. ${data["total"]}",
+                  "Amount: Kshs. ${widget.data["total"]}",
                   style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold
@@ -257,21 +130,30 @@ class OrderSummaryCard extends StatelessWidget {
               ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: data["products"].length,
+                  itemCount: widget.data["products"].length,
                   itemBuilder: (BuildContext context, int index){
                     return ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.white,
                         child: CachedNetworkImage(
-                          imageUrl: data["products"][index]["productImage"],
+                          imageUrl: widget.data["products"][index]["productImage"],
                           fit: BoxFit.scaleDown,
                         ),
                       ),
                       title: Text(
-                          data["products"][index]["productName"]
+                          widget.data["products"][index]["productName"]
                       ),
-                      subtitle: Text(
-                        "Quantity: ${data["products"][index]["qty"].toString()}",
+                      subtitle: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Quantity: ${widget.data["products"][index]["qty"].toString()}",
+                          ),
+                          Text(
+                            "Size: ${widget.data["products"][index]["size"]}",
+                          ),
+                        ],
                       ),
                     );
                   }
@@ -287,15 +169,15 @@ class OrderSummaryCard extends StatelessWidget {
                         Row(
                           children: [
                             const Text("Seller: ",style: TextStyle(fontWeight: FontWeight.bold),),
-                            Text(data["seller"]["shopName"])
+                            Text(widget.data["seller"]["shopName"])
                           ],
                         ),
-                        if (data["discount"] != 0 && data["discount"] != null) ...[
+                        if (widget.data["discount"] != 0 && widget.data["discount"] != null) ...[
                           Row(
                             children: [
                               const Text("Discount: ",style: TextStyle(fontWeight: FontWeight.bold),),
                               Text(
-                                "Kshs. ${data["discount"].toString()}",
+                                "Kshs. ${widget.data["discount"].toString()}",
                               )
                             ],
                           ),
@@ -303,7 +185,7 @@ class OrderSummaryCard extends StatelessWidget {
                             children: [
                               const Text("Discount Code Used: ",style: TextStyle(fontWeight: FontWeight.bold),),
                               Text(
-                                data["discountCode"].toString(),
+                                widget.data["discountCode"].toString(),
                               )
                             ],
                           )
@@ -312,12 +194,86 @@ class OrderSummaryCard extends StatelessWidget {
                     ),
                   ),
                 ),
+              ),
+              const Text("Customer Details"),
+              customer != null
+                  ?
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                  elevation: 4,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.only(left: 8, right: 8),
+                    trailing: IconButton(
+                        onPressed: (){
+                          _launchUrl(customer!["number"]);
+                        },
+                        icon: const Icon(Icons.phone)
+                    ),
+                    title: Row(
+                      children: [
+                        const Text("Name: "),
+                        Text(customer!["firstName"], style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.purple),),
+                      ],
+                    ),
+                    subtitle: Column(
+                      children: [
+                        const SizedBox(height: 10,),
+                        Row(
+                          children: [
+                            const Text("Phone Number: "),
+                            Text(customer!["number"], style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.purple),),
+                          ],
+                        ),
+                        const SizedBox(height: 10,),
+                        Row(
+                          children: [
+                            const Text("Address: "),
+                            Expanded(child: Text(customer!["address"], style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.purple),)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               )
+                  :
+              Container(),
+              if (widget.data["deliveryBoy"] != null) ... [
+                const Text("Delivery Person Details"),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    elevation: 4,
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: CachedNetworkImage(imageUrl: widget.document["deliveryBoy.image"]),
+                      ),
+                      title: Column(
+                        children: [
+                          Row(
+                            children: [
+                              const Text("Name: "),
+                              Text(widget.document["deliveryBoy.name"], style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.purple),),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Text("Phone Number: "),
+                              Text(widget.document["deliveryBoy.phone"], style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.purple),),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ]
             ],
           ),
           const Divider(height: 3, color: Colors.grey,),
-          statusContainer(data, document),
-          const Divider(height: 3, color: Colors.grey,),
+          orderServices.statusContainer(widget.data, widget.document, context),
         ],
       ),
     );

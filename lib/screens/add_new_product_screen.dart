@@ -68,7 +68,9 @@ class _AddNewProductState extends State<AddNewProduct> {
     try {
       int number = int.parse(text);
       quantities[item] = number;
-    } on FormatException {}
+    } on FormatException {
+      //
+    }
   }
 
   Widget singleFormField(int index, TextEditingController controller){
