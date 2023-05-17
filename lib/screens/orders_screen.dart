@@ -96,7 +96,10 @@ class _OrderScreenState extends State<OrderScreen> {
                           shrinkWrap: true,
                           children: snapshot.data!.docs.map((DocumentSnapshot document) {
                             Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                            return OrderSummaryCard(data: data, document: document);
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: OrderSummaryCard(data: data, document: document),
+                            );
                           }).toList(),
                         ),
                       ),

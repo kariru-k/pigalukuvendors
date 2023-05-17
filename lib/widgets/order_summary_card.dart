@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:map_launcher/map_launcher.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../services/firebase_services.dart';
@@ -34,6 +35,14 @@ class _OrderSummaryCardState extends State<OrderSummaryCard> {
     }
   }
 
+  _launchMap(GeoPoint location, name) async {
+    final availableMaps = await MapLauncher.installedMaps;
+    await availableMaps.first.showMarker(
+      coords: Coords(location.latitude, location.longitude),
+      title: name,
+    );
+  }
+
 
   @override
   void initState() {
@@ -51,17 +60,14 @@ class _OrderSummaryCardState extends State<OrderSummaryCard> {
     return Container(
       color: Colors.white,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           ListTile(
             horizontalTitleGap: 0,
             leading: CircleAvatar(
               radius: 14,
               backgroundColor: Colors.white,
-              child: Icon(
-                CupertinoIcons.square_list,
-                size: 18,
-                color: orderServices.statusColor(widget.document),
-              ),
+              child: orderServices.statusIcon(widget.document)
             ),
             title: Text(
               widget.data["orderStatus"],
@@ -110,11 +116,85 @@ class _OrderSummaryCardState extends State<OrderSummaryCard> {
               ],
             ),
           ),
+          customer != null
+              ?
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                const Text(
+                  "Customer Details",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16
+                  ),
+                ),
+                Card(
+                  color: Colors.white54,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        contentPadding: const EdgeInsets.only(left: 8, right: 8),
+
+                        subtitle: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Text("Name: ", style: TextStyle(fontWeight: FontWeight.bold,  color: Colors.black),),
+                                Text(customer!["firstName"], style: const TextStyle(fontWeight: FontWeight.normal,),),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text("Phone Number: ",  style: TextStyle(fontWeight: FontWeight.bold,  color: Colors.black),),
+                                Text(customer!["number"]),
+                              ],
+                            ),
+                            const SizedBox(height: 10,),
+                            Row(
+                              children: [
+                                const Text("Address: ",  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),),
+                                Expanded(child: Text(customer!["address"])),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                              onPressed: (){
+                                _launchUrl(customer!["number"]);
+                              },
+                              icon: Icon(Icons.phone, color: Theme.of(context).primaryColor,)
+                          ),
+                          const SizedBox(width: 30,),
+                          IconButton(
+                              onPressed: (){
+                                _launchMap(customer!["location"], customer!["address"]);
+                              },
+                              icon: Icon(Icons.map, color: Theme.of(context).primaryColor,)
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+              :
+          Container(),
           ExpansionTile(
             title: const Text(
               "Order details",
               style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 16,
                   color: Colors.black
               ),
             ),
@@ -194,50 +274,6 @@ class _OrderSummaryCardState extends State<OrderSummaryCard> {
                   ),
                 ),
               ),
-              const Text("Customer Details"),
-              customer != null
-                  ?
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  elevation: 4,
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.only(left: 8, right: 8),
-                    trailing: IconButton(
-                        onPressed: (){
-                          _launchUrl(customer!["number"]);
-                        },
-                        icon: const Icon(Icons.phone)
-                    ),
-                    title: Row(
-                      children: [
-                        const Text("Name: "),
-                        Text(customer!["firstName"], style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.purple),),
-                      ],
-                    ),
-                    subtitle: Column(
-                      children: [
-                        const SizedBox(height: 10,),
-                        Row(
-                          children: [
-                            const Text("Phone Number: "),
-                            Text(customer!["number"], style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.purple),),
-                          ],
-                        ),
-                        const SizedBox(height: 10,),
-                        Row(
-                          children: [
-                            const Text("Address: "),
-                            Expanded(child: Text(customer!["address"], style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.purple),)),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-                  :
-              Container(),
               if (widget.data["deliveryBoy"] != null) ... [
                 const Text("Delivery Person Details"),
                 Padding(

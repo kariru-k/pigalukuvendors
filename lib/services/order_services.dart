@@ -52,8 +52,6 @@ class OrderServices {
   }
 
   Widget statusContainer(data, document, context){
-
-
     if (data["orderStatus"] == "Accepted") {
       return Container(
         color: Colors.grey.shade300,
@@ -181,7 +179,25 @@ class OrderServices {
     return Colors.orange;
   }
 
+  Icon statusIcon(DocumentSnapshot document){
+    if (document["orderStatus"] == "Accepted") {
+      return Icon(Icons.assignment_turned_in_outlined, color: statusColor(document),);
+    }
+    if (document["orderStatus"] == "Rejected" || document["orderStatus"] == "Cancelled") {
+      return Icon(Icons.cancel_outlined, color: statusColor(document),);
+    }
+    if (document["orderStatus"] == "Picked Up") {
+      return Icon(Icons.cases, color: statusColor(document),);
+    }
+    if (document["orderStatus"] == "On the way") {
+      return Icon(Icons.delivery_dining_outlined, color: statusColor(document),);
+    }
+    if (document["orderStatus"] == "Delivered") {
+      return Icon(Icons.shopping_bag_rounded, color: statusColor(document),);
+    }
+    return Icon(Icons.assignment_turned_in_outlined, color: statusColor(document),);
 
+  }
 
 
 

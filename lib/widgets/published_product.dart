@@ -26,7 +26,7 @@ class PublishedProducts extends StatelessWidget {
         return SingleChildScrollView(
           child: DataTable(
               showBottomBorder: true,
-              dataRowHeight: 100,
+              dataRowMaxHeight: 100,
               headingRowColor: MaterialStateProperty.all(Colors.grey[200]),
               columns: const <DataColumn>[
                 DataColumn(label: Text("Product Name")),
