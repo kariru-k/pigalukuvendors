@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pigalukuvendors/widgets/image_picker.dart';
+import 'package:pigalukuvendors/widgets/owner_id_image.dart';
 import 'package:pigalukuvendors/widgets/register_form.dart';
 
 import 'login_screen.dart';
@@ -18,6 +19,8 @@ class RegisterScreen extends StatelessWidget {
           child: Column(
             children: [
               const ShopPicCard(),
+              const SizedBox(height: 50,),
+              const OwnerImageCard(),
               const RegisterForm(),
               SizedBox(
                 child: TextButton(

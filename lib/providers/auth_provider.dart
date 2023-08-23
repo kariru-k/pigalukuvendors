@@ -9,8 +9,10 @@ import 'package:geolocator/geolocator.dart';
 
 class AuthProvider extends ChangeNotifier {
 
-  late File? image;
-  bool isPicAvailable = false;
+  late File? shopImage;
+  late File? ownerImage;
+  bool isShopPicAvailable = false;
+  bool isOwnerPicAvailable = false;
   final picker = ImagePicker();
   String? pickererror;
   double? shopLatitude;
@@ -22,19 +24,34 @@ class AuthProvider extends ChangeNotifier {
   String? error;
   String? email;
 
-  Future<File?> getImage() async {
+  Future<File?> getShopImage() async {
     final pickedFile = await picker.pickImage(
         source: ImageSource.gallery, imageQuality: 20);
 
     if (pickedFile != null) {
-      image = File(pickedFile.path);
+      shopImage = File(pickedFile.path);
       notifyListeners();
     } else {
       pickererror = "No image selected";
       notifyListeners();
     }
 
-    return image;
+    return shopImage;
+  }
+
+  Future<File?> getOwnerImage() async {
+    final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery, imageQuality: 20);
+
+    if (pickedFile != null) {
+      ownerImage = File(pickedFile.path);
+      notifyListeners();
+    } else {
+      pickererror = "No image selected";
+      notifyListeners();
+    }
+
+    return ownerImage;
   }
 
   Future getCurrentAddress() async {
@@ -144,7 +161,8 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> saveVendorataToDb({
-    String? url,
+    String? shoppicurl,
+    String? ownerpicurl,
     String? shopName,
     String? ownerName,
     String? ownerNumber,
@@ -159,7 +177,7 @@ class AuthProvider extends ChangeNotifier {
 
     vendors.set({
       'uid': user?.uid,
-      'url': url,
+      'url': shoppicurl,
       'shopName': shopName,
       'ownerName': ownerName,
       'email': email,
@@ -172,7 +190,8 @@ class AuthProvider extends ChangeNotifier {
       'rating': 0.00,
       'totalRating': 0,
       'isTopPicked': false,
-      'accVerified': false
+      'accVerified': false,
+      'ownerPicUrl': ownerpicurl
     });
 
     return;

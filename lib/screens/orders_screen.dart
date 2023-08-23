@@ -71,6 +71,7 @@ class _OrderScreenState extends State<OrderScreen> {
               stream: orderServices.orders
                   .where("seller.sellerId", isEqualTo: user!.uid)
                   .where("orderStatus", isEqualTo: tag > 0 ? orderProvider.status : null)
+                  .orderBy("timestamp", descending: true)
                   .snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {

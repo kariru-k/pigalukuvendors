@@ -35,19 +35,14 @@ class _RegisterFormState extends State<RegisterForm> {
 
 
 
-  Future<String?>uploadFile(filePath) async {
+  Future<String?>uploadShopPicFile(filePath) async {
     File file = File(filePath);
-
-
     FirebaseStorage storage = FirebaseStorage.instance;
-
     try {
       await storage
           .ref("uploads/shopProfilePic/${_shopNameTextController.text}").putFile(file);
     } on FirebaseException {
-
     }
-
     String downloadUrl = await storage
         .ref("uploads/shopProfilePic/${_shopNameTextController.text}")
         .getDownloadURL();
@@ -55,6 +50,19 @@ class _RegisterFormState extends State<RegisterForm> {
     return downloadUrl;
   }
 
+  Future<String?>uploadOwnerPicFile(filePath) async {
+    File file = File(filePath);
+    FirebaseStorage storage = FirebaseStorage.instance;
+    try {
+      await storage
+          .ref("uploads/ownerProfilePic/${_shopNameTextController.text}").putFile(file);
+    } on FirebaseException {
+    }
+    String downloadUrl = await storage
+        .ref("uploads/ownerProfilePic/${_shopNameTextController.text}")
+        .getDownloadURL();
+    return downloadUrl;
+  }
 
 
   @override
@@ -420,40 +428,37 @@ class _RegisterFormState extends State<RegisterForm> {
           const SizedBox(height: 20,),
           ElevatedButton(
               onPressed: () {
-                if(authData.isPicAvailable == true){
-
+                if(authData.isShopPicAvailable == true && authData.isOwnerPicAvailable == true){
                   if (_formKey.currentState!.validate()) {
                     setState(() {
                       _isLoading = true;
                     });
                     authData.registerVendor(email, password).then((credential){
-
                       if(credential?.user?.uid != null){
-
-                        uploadFile(authData.image?.path).then((url) {
-
-                          if(url != null){
-
-                            authData.saveVendorataToDb(
-                              url: url,
-                              shopName: shopName,
-                              storePhoneNumber: storeMobile,
-                              ownerName: ownerName,
-                              ownerNumber: ownerMobile,
-                              description: _descriptionTextController.text
-                            ).then((value){
-                              setState(() {
-                                _formKey.currentState?.reset();
-                                _isLoading = false;
+                        uploadShopPicFile(authData.shopImage?.path).then((shopurl) {
+                          uploadOwnerPicFile(authData.ownerImage?.path).then((ownerurl){
+                            if(shopurl != null && ownerurl != null){
+                              authData.saveVendorataToDb(
+                                  shoppicurl: shopurl,
+                                  ownerpicurl: ownerurl,
+                                  shopName: shopName,
+                                  storePhoneNumber: storeMobile,
+                                  ownerName: ownerName,
+                                  ownerNumber: ownerMobile,
+                                  description: _descriptionTextController.text
+                              ).then((value){
+                                setState(() {
+                                  _formKey.currentState?.reset();
+                                  _isLoading = false;
+                                });
+                                Navigator.pushReplacementNamed(context, HomeScreen.id);
                               });
-                              Navigator.pushReplacementNamed(context, HomeScreen.id);
-                            });
 
 
-                          } else {
-                            scaffoldMessage("Failed to upload Shop Profile Picture");
-                          }
-
+                            } else {
+                              scaffoldMessage("Failed to upload Shop Profile Picture");
+                            }
+                          });
                         });
 
                       } else {

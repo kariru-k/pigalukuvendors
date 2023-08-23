@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:pigalukuvendors/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-class ShopPicCard extends StatefulWidget {
-  const ShopPicCard({Key? key}) : super(key: key);
+class OwnerImageCard extends StatefulWidget {
+  const OwnerImageCard({Key? key}) : super(key: key);
 
   @override
-  State<ShopPicCard> createState() => _ShopPicCardState();
+  State<OwnerImageCard> createState() => _OwnerImageCardState();
 }
 
-class _ShopPicCardState extends State<ShopPicCard> {
+class _OwnerImageCardState extends State<OwnerImageCard> {
   File? _image;
 
 
@@ -24,12 +24,12 @@ class _ShopPicCardState extends State<ShopPicCard> {
       padding: const EdgeInsets.all(20.0),
       child: InkWell(
         onTap: (){
-          authData.getShopImage().then((image){
+          authData.getOwnerImage().then((image){
             setState(() {
               _image = image;
             });
             if(image != null){
-              authData.isShopPicAvailable = true;
+              authData.isOwnerPicAvailable = true;
             }
           });
         },
@@ -41,11 +41,11 @@ class _ShopPicCardState extends State<ShopPicCard> {
               borderRadius: BorderRadius.circular(4.0),
               child: _image == null ? const Center(
                   child: Text(
-                    "Add Shop Image",
+                    "Add Owner ID Image",
                     style: TextStyle(
-                      color: Colors.grey
+                        color: Colors.grey
                     ),
-                  ) 
+                  )
               ) : Image.file(_image!, fit: BoxFit.fill,),
             ),
           ),
